@@ -23,3 +23,6 @@ BOT_LOG_CHANNEL = channel_ID
 ROLE_MESSAGE = message_ID
 ```
 
+## To add:
+- editable / quotable rules text
+- more to come
