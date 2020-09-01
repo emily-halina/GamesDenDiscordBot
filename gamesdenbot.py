@@ -9,6 +9,9 @@ import os
 import dotenv
 from dotenv import load_dotenv
 
+import random
+from dnd_dice_roller import parse_dice_rolls
+
 # load up attributes from .env file
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -26,9 +29,13 @@ client = commands.Bot(command_prefix = '!')
 
 # list of roles
 roles = {
-'👍': 'test role 1',
-'🥺': 'test role 2',
-'👀': 'test role 3'
+'🖌️': 'Artist',
+'🖥️': 'Programmer',
+'📝': 'Writer',
+'🎵': 'Audio',
+'👔': 'Producer',
+'⚔️': 'Looking for D&D',
+'🎲': 'Board Games'
 }
 role_emoji_list = roles.keys()
 
@@ -112,4 +119,8 @@ async def on_raw_reaction_remove(payload):
 async def uwu(ctx):
     await ctx.channel.send('owo')
 
+@client.command()
+async def roll(ctx):
+    result = parse_dice_rolls(ctx.message.content[6:])
+    await ctx.channel.send(result)
 client.run(TOKEN)
