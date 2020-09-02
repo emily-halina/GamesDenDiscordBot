@@ -11,11 +11,16 @@ def get_input():
     return input('Enter your dice roll! ')
 
 def parse_dice_rolls(input):
-
     # parse the input into a list
     input = input.replace(' ', '')
+    input = input.replace('💯', '100') # 💯
+    if input == '':
+        return random.randint(1, 100)
     input_list = []
+    modifier = 0
     chunk = ''
+    add_sub = True
+
     for c in input:
         if c != '+' and c != '-':
             chunk += c
@@ -34,13 +39,16 @@ def parse_dice_rolls(input):
         item = item.lower()
         # this is a dice
         if 'd' in item:
-            roll_log.append(item + ':')
+            new_dice = []
+            new_dice.append(item + ':')
             # find prefix (if there is one)
             i = 0
             prefix = ''
             while item[i] != 'd':
                 prefix += item[i]
                 i += 1
+            if prefix == '':
+                prefix = '1'
             try:
                 prefix = int(prefix)
             except:
@@ -59,23 +67,36 @@ def parse_dice_rolls(input):
                 print('Whoops faces')
                 return 'Error! Please double-check your formatting and try again!'
 
+            if faces == 0:
+                return 'do not try to roll a d0 please.'
             die_total = 0
             # roll the dice
             for k in range(prefix):
                 roll = random.randint(1, faces)
                 die_total += roll
-                roll_log.append('(' + str(roll) + ')')
+                new_dice.append('(' + str(roll) + ')')
             running_total.append(die_total)
+            roll_log.append(new_dice)
 
         else:
             roll_log.append(item)
             running_total.append(item)
+            print(roll_log)
+            if item == '+':
+                add_sub = True
+            elif item == '-':
+                add_sub = not add_sub
+            elif item != '': # debug this later
+                if add_sub:
+                    modifier += int(item)
+                else:
+                    modifier -= int(item)
 
     # tally up the running total accounting for signs
     add_sub = True
     total = 0
     for term in running_total:
-        if term != '+' and term != '-':
+        if term != '+' and term != '-' and term != '':
             if add_sub:
                 total += int(term)
             else:
@@ -84,11 +105,12 @@ def parse_dice_rolls(input):
             if term == '+':
                 add_sub = True
             else:
-                add_sub = False
+                add_sub = not add_sub
 
-    roll_log.append('Total: ' + str(total))
-    print(' '.join(roll_log))
-    return ' '.join(roll_log)
+    roll_log.append(modifier)
+    roll_log.append(str(total))
+    print(roll_log)
+    return roll_log
 
 
 if __name__ == "__main__":

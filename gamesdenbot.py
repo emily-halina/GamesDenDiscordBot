@@ -117,10 +117,70 @@ async def on_raw_reaction_remove(payload):
 # test of commands
 @client.command()
 async def uwu(ctx):
+    '''
+    Use for a surprise :3c
+    '''
     await ctx.channel.send('owo')
 
 @client.command()
 async def roll(ctx):
-    result = parse_dice_rolls(ctx.message.content[6:])
-    await ctx.channel.send(result)
+    '''
+    Multi purpose dice roller for Dungeons and Dragons.
+    Takes input in the format of: AdB + C
+    Supports multiple dice and modifiers in the same roll, as well as negative dice.
+
+    Input Examples:
+    2d6 + 1d8 + 2
+    5+d6+7d8
+    d20 + 7
+    2d8 - d6 + 2
+
+    If no argument is given, returns a random number between 1 and 100.
+    '''
+    # parse the input if it is valid and get the results
+    process = True
+    VALID_CHARS = [' ', '   ', '1','2','3','4','5','6','7','8','9','0','d', '+', '-', '💯']
+    for c in ctx.message.content[6:]:
+        if c.lower() not in VALID_CHARS:
+            process = False
+    if process == True:
+        result = parse_dice_rolls(ctx.message.content[6:])
+    else:
+        await ctx.channel.send('Error! Please check your formatting and try again..')
+        return
+    # if the result is a list, the input was a sequence of dice
+    if type(result) == type([]):
+        # process the result of the rolls and place into an embedded message
+        desc_str = '**' + ctx.message.content[6:] + '**'
+        roll_embed = discord.Embed(title="Dice Roll Results", description=desc_str, color=0x709cdb)
+        for item in result:
+            if type(item) == type([]):
+                rolls = ''
+                i = 1
+                while i < len(item):
+                    rolls += (item[i] + ' ')
+                    i += 1
+                roll_embed.add_field(name=item[0], value=rolls, inline=False)
+        modifier = result[len(result)-2]
+        # add on the modifier tab if there is a modifier
+        if type(modifier) == type(1) and modifier != 0:
+            if modifier > 0:
+                modifier = str(modifier)
+                modifier = '+' + modifier
+            else:
+                modifier = str(modifier)
+            roll_embed.add_field(name='Modifier:', value=modifier, inline=False)
+        roll_embed.add_field(name='Total:', value= '**' + result[len(result)-1] + '**', inline=False)
+    # if the result is an integer, there was no provided argument (roll a d100)
+    elif type(result) == type(1):
+        roll_embed = discord.Embed(title="Dice Roll Results", description='d100', color=0x709cdb)
+        roll_embed.add_field(name='d100', value=result, inline=False)
+    elif type(result) == type('hi'):
+        await ctx.channel.send(result)
+        return
+    # failsafe
+    else:
+        await ctx.channel.send('Error! Please check your formatting and try again..')
+        return
+    await ctx.channel.send(embed=roll_embed)
 client.run(TOKEN)
