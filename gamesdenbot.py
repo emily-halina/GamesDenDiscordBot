@@ -34,7 +34,7 @@ roles = {
 '📝': 'Writer',
 '🎵': 'Audio',
 '👔': 'Producer',
-'⚔️': 'Looking for D&D',
+'⚔️': 'Looking for TTRPG',
 '🎲': 'Board Games'
 }
 role_emoji_list = roles.keys()
@@ -123,9 +123,16 @@ async def uwu(ctx):
     await ctx.channel.send('owo')
 
 @client.command()
+async def owo(ctx):
+    '''
+    Use for a surprise :3c
+    '''
+    await ctx.channel.send('uwu')
+
+@client.command()
 async def roll(ctx):
     '''
-    Multi purpose dice roller for Dungeons and Dragons.
+    Multi purpose dice roller.
     Takes input in the format of: AdB + C
     Supports multiple dice and modifiers in the same roll, as well as negative dice.
 
@@ -180,7 +187,61 @@ async def roll(ctx):
         return
     # failsafe
     else:
-        await ctx.channel.send('Error! Please check your formatting and try again..')
+        await ctx.channel.send('Error! This command takes input in the format of AdB + C')
         return
     await ctx.channel.send(embed=roll_embed)
+
+@client.command()
+@commands.has_role('execs')
+async def nickname_check(ctx):
+    '''
+    if someone hasn't changed their username, tattle on them
+    '''
+    member_list = client.guilds[0].members
+    join_list = []
+    for member in member_list:
+        if member.nick == None:
+            join_list.append(member)
+    join_list.sort(key=lambda member: member.joined_at)
+    embed = discord.Embed(title='Nickname Check', description='bad boyz girlz and enbiez', color=0x709cdb)
+    for member in join_list:
+        embed.add_field(name=member.name + '#' + str(member.discriminator), value=str(member.joined_at), inline=False)
+    await ctx.channel.send(embed=embed)
+
+@client.command()
+@commands.has_role('execs')
+async def shuffle(ctx):
+    '''
+    shuffles the users in a given voice channel
+
+    takes input in the form of !shuffle Channel Name
+    '''
+    server = client.guilds[0]
+    channel_list = server.voice_channels
+    game_chats = []
+    for channel in channel_list:
+        if ctx.message.content[9:] == channel.name:
+            match = True
+            shuffle_channel = channel
+        elif 'Game Chat' in channel.name:
+            game_chats.append(channel)
+    if match:
+        random_ids = []
+        i = 0
+        # add the appropriate amount of numbers
+        for member in shuffle_channel.members:
+            random_ids.append(i)
+            if i < 2:
+                i += 1
+            else:
+                i = 0
+        random.shuffle(random_ids)
+        # move members to random channels
+        k = 0
+        for member in shuffle_channel.members:
+            await member.move_to(game_chats[random_ids[k]])
+            k += 1
+    else:
+        await ctx.channel.send('Error, not a valid channel!')
+
 client.run(TOKEN)
