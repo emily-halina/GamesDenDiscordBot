@@ -68,7 +68,7 @@ async def on_message(message):
     server = client.guilds[0]
     log = get(server.channels, id=BOT_LOG_CHANNEL)
     # if the channel isn't nsfw, ask users to edit their message and post a log message
-    if not message.channel.is_nsfw() and message.channel != log:
+    if not message.channel.is_nsfw() and not message.author.bot:
         for curse in CURSE_WORDS:
             if curse in content:
                 await message.channel.send('Hey do not say that please edit ur message')
@@ -76,6 +76,11 @@ async def on_message(message):
                 f"Posted warning for {message.author}'s message: \n"
                 f"```{content}```")
                 break
+    # let them say that
+    if 'uwu' in content and not message.author.bot:
+        await message.channel.send('owo')
+    if 'owo' in content and not message.author.bot:
+        await message.channel.send('uwu')
     await client.process_commands(message)
 
 # error handling for commands not existing
@@ -113,21 +118,6 @@ async def on_raw_reaction_remove(payload):
             if member:
                 role = get(server.roles, name=roles[emoji])
                 await member.remove_roles(role)
-
-# test of commands
-@client.command()
-async def uwu(ctx):
-    '''
-    Use for a surprise :3c
-    '''
-    await ctx.channel.send('owo')
-
-@client.command()
-async def owo(ctx):
-    '''
-    Use for a surprise :3c
-    '''
-    await ctx.channel.send('uwu')
 
 @client.command()
 async def roll(ctx):
