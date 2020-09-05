@@ -73,7 +73,7 @@ async def on_message(message):
         for curse in CURSE_WORDS:
             if curse in content:
                 await message.channel.send('Hey, please check your message for swears!')
-                audit_embed = discord.Embed(title="Swear detected", description=message.author, color=0xfc3232, timestamp=message.created_at)
+                audit_embed = discord.Embed(title="Swear detected", description=str(message.author), color=0xfc3232, timestamp=message.created_at)
                 audit_embed.add_field(name="Original Message", value=content, inline=False)
                 audit_embed.add_field(name="Offending Word", value=curse, inline=False)
                 
