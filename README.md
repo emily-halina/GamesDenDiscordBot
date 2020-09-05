@@ -23,6 +23,7 @@ CURSE_WORDS = censored, list, of, words, formatted, like, so
 GREETING_CHANNEL = channel_ID
 BOT_LOG_CHANNEL = channel_ID
 ROLE_MESSAGE = message_ID
+BASE_PATH = path/to/this/folder
 ```
 
 ## To add:
