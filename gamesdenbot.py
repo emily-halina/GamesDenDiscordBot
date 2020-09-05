@@ -210,7 +210,7 @@ async def nickname_check(ctx):
         whitelist = f.readlines()
         for member in member_list:
             if member.nick == None:
-                if f'@{str(member)}' not in whitelist:
+                if str(member) not in whitelist:
                     join_list.append(member)
     join_list.sort(key=lambda member: member.joined_at)
     embed = discord.Embed(title='Nickname Check', description='bad boyz girlz and enbiez', color=0x709cdb)
