@@ -81,7 +81,7 @@ async def on_message(message):
                 audit_embed.add_field(name="Original Message", value=content, inline=False)
                 audit_embed.add_field(name="Offending Word", value=curse, inline=False)
                     
-                await log.send("test", embed=audit_embed)
+                await log.send(embed=audit_embed)
                 break
     # let them say that
     if 'uwu' in content and not message.author.bot:
