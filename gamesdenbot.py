@@ -25,8 +25,6 @@ GREETING_CHANNEL = int(os.getenv('GREETING_CHANNEL'))
 BOT_LOG_CHANNEL = int(os.getenv('BOT_LOG_CHANNEL'))
 ROLE_MESSAGE = int(os.getenv('ROLE_MESSAGE'))
 
-uwu = discord.File(open('./uwu.png', 'r'))
-
 client = commands.Bot(command_prefix = '!')
 
 
@@ -88,11 +86,15 @@ async def on_message(message):
     # let them say that
     if 'uwu' in content and not message.author.bot:
         if random.randint(1, 10) == 1:
-            await message.channel.send(file=uwu)
+            await message.channel.send(file=discord.File('/home/shashank/Documents/GamesDenDiscordBot/uwu.png'))
         else:
             await message.channel.send('owo')
     if 'owo' in content and not message.author.bot:
         await message.channel.send('uwu')
+    if 'uwo' in content and not message.author.bot:
+        await message.channel.send('owu')
+    if 'owu' in content and not message.author.bot:
+        await message.channel.send('uwo')
     await client.process_commands(message)
 
 # error handling for commands not existing
