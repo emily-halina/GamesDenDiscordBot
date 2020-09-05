@@ -206,11 +206,11 @@ async def nickname_check(ctx):
     '''
     member_list = client.guilds[0].members
     join_list = []
-    with open(BASE_PATH + 'good_list', 'r') as f:
+    with open(BASE_PATH + 'good_list.txt', 'r') as f:
         whitelist = f.readlines()
         for member in member_list:
             if member.nick == None:
-                if str(member) not in whitelist:
+                if f'{str(member)}\n' not in whitelist:
                     join_list.append(member)
     join_list.sort(key=lambda member: member.joined_at)
     embed = discord.Embed(title='Nickname Check', description='bad boyz girlz and enbiez', color=0x709cdb)
@@ -245,7 +245,7 @@ async def nick_whitelist(ctx):
                 f.write(name)
             await ctx.channel.send('Added ' + name + ' to the good boyz/girlz/enbiez list')
         else:
-            ctx.channel.send(name + ' is already in the list!')
+            await ctx.channel.send(name + ' is already in the list!')
 
 
 @client.command()
