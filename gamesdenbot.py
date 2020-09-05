@@ -76,11 +76,11 @@ async def on_message(message):
                     await message.channel.send("Hey, please check your mess- Oh, I'm sorry Mr. President, I didn't realize it was you! I'll look the other way this time but please watch you language in the future!")
                 else:
                     await message.channel.send('Hey, please check your message for swears!')
-                
+
                 audit_embed = discord.Embed(title="Swear detected", description=str(message.author), color=0xfc3232, timestamp=message.created_at)
                 audit_embed.add_field(name="Original Message", value=content, inline=False)
                 audit_embed.add_field(name="Offending Word", value=curse, inline=False)
-                    
+
                 await log.send(embed=audit_embed)
                 break
     # let them say that
@@ -207,13 +207,21 @@ async def nickname_check(ctx):
         if member.nick == None:
             join_list.append(member)
     join_list.sort(key=lambda member: member.joined_at)
-    #embed = discord.Embed(title='Nickname Check', description='bad boyz girlz and enbiez', color=0x709cdb)
-    message = "```"
+    embed = discord.Embed(title='Nickname Check', description='bad boyz girlz and enbiez', color=0x709cdb)
+    embed_limit = 20
+    e = 1
+    embed_list = []
     for member in join_list:
-        #embed.add_field(name=member.name + '#' + str(member.discriminator), value=str(member.joined_at), inline=False)
-        message += 'name: ' + member.name + '#' + str(member.discriminator) + ' join date: ' + str(member.joined_at) + '\n'
-    message += "```"
-    await ctx.channel.send(message)
+        embed.add_field(name=member.name + '#' + str(member.discriminator), value=str(member.joined_at), inline=False)
+        e += 1
+        if e > embed_limit:
+            embed_list.append(embed)
+            embed = discord.Embed(title='Nickname Check', description='bad boyz girlz and enbiez', color=0x709cdb)
+            e = 1
+    if e != 1:
+        embed_list.append(embed)
+    for message in embed_list:
+        await ctx.channel.send(embed=message)
 
 @client.command()
 @commands.has_role('execs')
