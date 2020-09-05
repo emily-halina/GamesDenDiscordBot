@@ -193,10 +193,13 @@ async def nickname_check(ctx):
         if member.nick == None:
             join_list.append(member)
     join_list.sort(key=lambda member: member.joined_at)
-    embed = discord.Embed(title='Nickname Check', description='bad boyz girlz and enbiez', color=0x709cdb)
+    #embed = discord.Embed(title='Nickname Check', description='bad boyz girlz and enbiez', color=0x709cdb)
+    message = "```"
     for member in join_list:
-        embed.add_field(name=member.name + '#' + str(member.discriminator), value=str(member.joined_at), inline=False)
-    await ctx.channel.send(embed=embed)
+        #embed.add_field(name=member.name + '#' + str(member.discriminator), value=str(member.joined_at), inline=False)
+        message += 'name: ' + member.name + '#' + str(member.discriminator) + ' join date: ' + str(member.joined_at) + '\n'
+    message += "```"
+    await ctx.channel.send(message)
 
 @client.command()
 @commands.has_role('execs')
