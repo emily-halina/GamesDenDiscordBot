@@ -8,7 +8,8 @@ Written by Eric Halina, with reference to previous bot by Atharv Vohra --> https
 - assigning / removing roles based on reactions to a specific message
 - filtering message content for curses and requesting users to edit their messages
 - logging these activities in a seperate bot log channel
-- dice rolling command for D&D
+- dice rolling command for TTRPGs
+- moderation tools for games den server
 
 
 ## .env file setup
