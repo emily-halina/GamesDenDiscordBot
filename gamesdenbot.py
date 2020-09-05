@@ -7,6 +7,7 @@ from discord.utils import get
 
 import os
 import dotenv
+from datetime import datetime
 from dotenv import load_dotenv
 
 import random
@@ -71,10 +72,12 @@ async def on_message(message):
     if not message.channel.is_nsfw() and not message.author.bot:
         for curse in CURSE_WORDS:
             if curse in content:
-                await message.channel.send('Hey do not say that please edit ur message')
-                await log.send(
-                f"Posted warning for {message.author}'s message: \n"
-                f"```{content}```")
+                await message.channel.send('Hey, please check your message for swears!')
+                audit_embed = discord.Embed(title="Swear detected", description=message.author, color=0xfc3232, timestamp=message.created_at)
+                audit_embed.add_field(name="Original Message", value=content, inline=False)
+                audit_embed.add_field(name="Offending Word", value=curse, inline=False)
+                
+                await log.send("test", embed=audit_embed)
                 break
     # let them say that
     if 'uwu' in content and not message.author.bot:
