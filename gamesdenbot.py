@@ -25,6 +25,8 @@ GREETING_CHANNEL = int(os.getenv('GREETING_CHANNEL'))
 BOT_LOG_CHANNEL = int(os.getenv('BOT_LOG_CHANNEL'))
 ROLE_MESSAGE = int(os.getenv('ROLE_MESSAGE'))
 
+uwu = discord.File(open('./uwu.png', 'r'))
+
 client = commands.Bot(command_prefix = '!')
 
 
@@ -72,16 +74,23 @@ async def on_message(message):
     if not message.channel.is_nsfw() and not message.author.bot:
         for curse in CURSE_WORDS:
             if curse in content:
-                await message.channel.send('Hey, please check your message for swears!')
+                if str(message.author) == 'TheArcticGiraffe#5863':
+                    await message.channel.send("Hey, please check your mess- Oh, I'm sorry Mr. President, I didn't realize it was you! I'll look the other way this time but please watch you language in the future!")
+                else:
+                    await message.channel.send('Hey, please check your message for swears!')
+                
                 audit_embed = discord.Embed(title="Swear detected", description=str(message.author), color=0xfc3232, timestamp=message.created_at)
                 audit_embed.add_field(name="Original Message", value=content, inline=False)
                 audit_embed.add_field(name="Offending Word", value=curse, inline=False)
-                
+                    
                 await log.send("test", embed=audit_embed)
                 break
     # let them say that
     if 'uwu' in content and not message.author.bot:
-        await message.channel.send('owo')
+        if random.randint(1, 10) == 1:
+            await message.channel.send(file=uwu)
+        else:
+            await message.channel.send('owo')
     if 'owo' in content and not message.author.bot:
         await message.channel.send('uwu')
     await client.process_commands(message)
