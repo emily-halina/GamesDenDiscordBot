@@ -234,14 +234,17 @@ async def shuffle(ctx):
     server = client.guilds[0]
     channel_list = server.voice_channels
     game_chats = []
+    
     for channel in channel_list:
         if ctx.message.content[9:] == channel.name:
             match = True
             shuffle_channel = channel
         elif 'Game Chat' in channel.name:
             game_chats.append(channel)
+
     if match:
         random_ids = []
+        member_list = []
         i = 0
         # add the appropriate amount of numbers
         for member in shuffle_channel.members:
@@ -250,12 +253,14 @@ async def shuffle(ctx):
                 i += 1
             else:
                 i = 0
+            member_list.append(member)
         random.shuffle(random_ids)
+
         # move members to random channels
         k = 0
-        for member in shuffle_channel.members:
+        for member in member_list:
             await member.move_to(game_chats[random_ids[k]])
-            k += 1
+            k+=1
     else:
         await ctx.channel.send('Error, not a valid channel!')
 
