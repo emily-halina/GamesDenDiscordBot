@@ -28,6 +28,11 @@ ROLE_MESSAGE = int(os.getenv('ROLE_MESSAGE'))
 # get base path for file sending
 BASE_PATH = os.getenv('BASE_PATH')
 
+# Get random greetings
+greetings = []
+with open(BASE_PATH + 'greetings.txt', 'r') as f:
+    greetings = f.readlines()
+
 client = commands.Bot(command_prefix = '!')
 
 
@@ -61,7 +66,9 @@ async def on_member_join(member):
     rules = get(server.channels, name='rules-and-info')
     intro = get(server.channels, name='introductions')
     role = get(server.channels, name='role-signup')
-    await channel.send(f"Welcome {member.mention}! Be sure to check out {rules.mention} and message an executive if you have any questions. When you're ready, head over to {intro.mention} to introduce yourself, and check out {role.mention} to assign yourself some roles based on your disciplines and interests! Enjoy your stay in the Games Den!")
+
+    message = random.choice(greetings)
+    await channel.send(message.format(rules, intro, role))
 
 # leaving message when member leaves server
 @client.event
