@@ -35,11 +35,13 @@ client = commands.Bot(command_prefix = '!')
 roles = {
 '🖌️': 'Artist',
 '🖥️': 'Programmer',
+'🗺': 'Designer',
 '📝': 'Writer',
 '🎵': 'Audio',
 '👔': 'Producer',
 '⚔️': 'Looking for TTRPG',
-'🎲': 'Board Games'
+'🎲': 'Board Games',
+'🎴': 'Card Games'
 }
 role_emoji_list = roles.keys()
 
