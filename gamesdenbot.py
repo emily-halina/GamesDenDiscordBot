@@ -25,6 +25,9 @@ GREETING_CHANNEL = int(os.getenv('GREETING_CHANNEL'))
 BOT_LOG_CHANNEL = int(os.getenv('BOT_LOG_CHANNEL'))
 ROLE_MESSAGE = int(os.getenv('ROLE_MESSAGE'))
 
+# get base path for file sending
+BASE_PATH = os.getenv('BASE_PATH')
+
 client = commands.Bot(command_prefix = '!')
 
 
@@ -90,7 +93,7 @@ async def on_message(message):
     # let them say that
     if 'uwu' in content and not message.author.bot:
         if random.randint(1, 10) == 1:
-            await message.channel.send(file=discord.File('/home/shashank/Documents/GamesDenDiscordBot/uwu.png'))
+            await message.channel.send(file=discord.File(BASE_PATH + 'uwu.png'))
         else:
             await message.channel.send('owo')
     if 'owo' in content and not message.author.bot:
@@ -207,9 +210,12 @@ async def nickname_check(ctx):
     '''
     member_list = client.guilds[0].members
     join_list = []
-    for member in member_list:
-        if member.nick == None:
-            join_list.append(member)
+    with open(BASE_PATH + 'good_list.txt', 'r') as f:
+        whitelist = f.readlines()
+        for member in member_list:
+            if member.nick == None:
+                if f'{str(member)}\n' not in whitelist:
+                    join_list.append(member)
     join_list.sort(key=lambda member: member.joined_at)
     embed = discord.Embed(title='Nickname Check', description='bad boyz girlz and enbiez', color=0x709cdb)
     embed_limit = 20
@@ -226,6 +232,25 @@ async def nickname_check(ctx):
         embed_list.append(embed)
     for message in embed_list:
         await ctx.channel.send(embed=message)
+
+@client.command()
+@commands.has_role('execs')
+async def nick_whitelist(ctx):
+    '''
+    Adds a user to the good boyz/girlz/enbiez list even if they haven't
+    changed their username
+    '''
+    with open(BASE_PATH + 'good_list.txt', 'r') as list_file:
+        whitelist = list_file.readlines()
+        name = ctx.message.content[16:]
+
+        if name not in whitelist:
+            with open(BASE_PATH + 'good_list.txt', 'a') as f:
+                f.write(name)
+            await ctx.channel.send('Added ' + name + ' to the good boyz/girlz/enbiez list')
+        else:
+            await ctx.channel.send(name + ' is already in the list!')
+
 
 @client.command()
 @commands.has_role('execs')
