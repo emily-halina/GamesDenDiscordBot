@@ -68,7 +68,7 @@ async def on_member_join(member):
     role = get(server.channels, name='role-signup')
 
     message = random.choice(greetings)
-    await channel.send(message.format(rules = rules, intro = intro, role = role))
+    await channel.send(message.format(member = member, rules = rules, intro = intro, role = role))
 
 # leaving message when member leaves server
 @client.event
