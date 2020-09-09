@@ -53,8 +53,12 @@ async def on_ready():
 # greeting message when member joins server
 @client.event
 async def on_member_join(member):
+    server = client.guilds[0]
     channel = client.get_channel(GREETING_CHANNEL)
-    await channel.send(f'Welcome {member.mention}! Be sure to check out #rules-and-info and enjoy your stay in the Games Den!')
+    rules = get(server.channels, name='rules-and-info')
+    intro = get(server.channels, name='introductions')
+    role = get(server.channels, name='role-signup')
+    await channel.send(f"Welcome {member.mention}! Be sure to check out {rules.mention} and message an executive if you have any questions. When you're ready, head over to {intro.mention} to introduce yourself, and check out {role.mention} to assign yourself some roles based on your disciplines and interests! Enjoy your stay in the Games Den!")
 
 # leaving message when member leaves server
 @client.event
@@ -101,7 +105,7 @@ async def on_message(message):
 @client.event
 async def on_command_error(message, error):
     if isinstance(error, commands.CommandNotFound):
-        await message.channel.send('Error: Command does not exist')
+        pass
 
 # assign roles based on reaction to specific message
 # note: on_raw_reaction_add is used rather than on_reaction_add to avoid issues with the bot forgetting all messages before it is turned on
@@ -234,7 +238,7 @@ async def shuffle(ctx):
     server = client.guilds[0]
     channel_list = server.voice_channels
     game_chats = []
-    
+
     for channel in channel_list:
         if ctx.message.content[9:] == channel.name:
             match = True
