@@ -271,7 +271,7 @@ async def whitelist_check(ctx):
         whitelist.sort()
         message = '**Whitelist:**\n```'
         for count in range(len(whitelist)):
-            message += f'{name.strip()}'
+            message += '{name}'.format(name= whitelist[count].strip())
             if count != len(whitelist) - 1:
                 message += ', '
             if count != 0 and count % 5 == 0:
