@@ -268,7 +268,7 @@ async def whitelist_check(ctx):
     '''
     with open(BASE_PATH + 'good_list.txt', 'r') as list_file:
         whitelist = list_file.readlines()
-        whitelist.sort()
+        whitelist.sort(key= lambda name: name.lower())
         message = '**Whitelist:**\n```'
         for count in range(len(whitelist)):
             message += '{name}'.format(name= whitelist[count].strip())
