@@ -244,7 +244,7 @@ async def nickname_check(ctx):
 
 @client.command()
 @commands.has_role('execs')
-async def nick_whitelist(ctx):
+async def whitelist_add(ctx):
     '''
     Adds a user to the good boyz/girlz/enbiez list even if they haven't
     changed their username
@@ -255,10 +255,50 @@ async def nick_whitelist(ctx):
 
         if name not in whitelist:
             with open(BASE_PATH + 'good_list.txt', 'a') as f:
-                f.write(name)
+                f.write('\n' + name)
             await ctx.channel.send('Added ' + name + ' to the good boyz/girlz/enbiez list')
         else:
             await ctx.channel.send(name + ' is already in the list!')
+
+@client.command()
+@commands.has_role('execs')
+async def whitelist_check(ctx):
+    '''
+    Lists all the members in the good list, for auditing
+    '''
+    with open(BASE_PATH + 'good_list.txt', 'r') as list_file:
+        whitelist = list_file.readlines()
+        whitelist.sort(key= lambda name: name.lower())
+        message = '**Whitelist:**\n```'
+        for count in range(len(whitelist)):
+            message += '{name}'.format(name= whitelist[count].strip())
+            if count != len(whitelist) - 1:
+                message += ', '
+
+        message += '```'
+
+        await ctx.channel.send(message)
+
+@client.command()
+@commands.has_role('execs')
+async def whitelist_remove(ctx):
+    '''
+    Removes a name from the whitelist
+    '''
+    with open(BASE_PATH + 'good_list.txt', 'r') as list_file:
+        whitelist = list_file.readlines()
+        name = ctx.message.content[18:]
+
+        for i in range(len(whitelist)):
+            if whitelist[i].strip() == name:
+                whitelist.pop(i)
+                with open(BASE_PATH + 'good_list.txt', 'w') as f:
+                    f.write(''.join(whitelist))
+                await ctx.channel.send(f'{name} has been removed from the good list!')
+                break
+        else:
+            await ctx.channel.send(f'{name} is not on the list.')
+        
 
 
 @client.command()
