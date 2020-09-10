@@ -260,6 +260,20 @@ async def nick_whitelist(ctx):
         else:
             await ctx.channel.send(name + ' is already in the list!')
 
+@client.command()
+@commands.has_role('execs')
+async def whitelist_check(ctx):
+    '''
+    Lists all the members in the good list, for auditing
+    '''
+    with open(BASE_PATH + 'good_list.txt', 'r') as list_file:
+        whitelist = list_file.readlines()
+        message = '**Whitelist:**\n'
+        for name in whitelist:
+            message += f'`{name}`, '
+
+        await ctx.channel.send(message)
+
 
 @client.command()
 @commands.has_role('execs')
