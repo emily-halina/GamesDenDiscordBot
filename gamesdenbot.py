@@ -274,12 +274,31 @@ async def whitelist_check(ctx):
             message += '{name}'.format(name= whitelist[count].strip())
             if count != len(whitelist) - 1:
                 message += ', '
-            if count != 0 and count % 5 == 0:
-                message += '\n'
 
         message += '```'
 
         await ctx.channel.send(message)
+
+@client.command()
+@commands.has_role('execs')
+async def remove_whitelist(ctx):
+    '''
+    Removes a name from the whitelist
+    '''
+    with open(BASE_PATH + 'good_list.txt', 'r') as list_file:
+        whitelist = list_file.readlines()
+        name = ctx.message.content[18:]
+
+        for i in range(len(whitelist)):
+            if whitelist[i].strip() == name:
+                whitelist.pop(i)
+                with open(BASE_PATH + 'good_list.txt', 'w') as f:
+                    f.write(whitelist)
+                await ctx.channel.send(f'{name} has been removed from the good list!')
+                break
+        else:
+            await ctx.channel.send(f'{name} is not on the list.')
+        
 
 
 @client.command()
