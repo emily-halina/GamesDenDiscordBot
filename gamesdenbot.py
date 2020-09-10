@@ -244,7 +244,7 @@ async def nickname_check(ctx):
 
 @client.command()
 @commands.has_role('execs')
-async def nick_whitelist(ctx):
+async def whitelist_add(ctx):
     '''
     Adds a user to the good boyz/girlz/enbiez list even if they haven't
     changed their username
@@ -255,7 +255,7 @@ async def nick_whitelist(ctx):
 
         if name not in whitelist:
             with open(BASE_PATH + 'good_list.txt', 'a') as f:
-                f.write(name)
+                f.write('\n' + name)
             await ctx.channel.send('Added ' + name + ' to the good boyz/girlz/enbiez list')
         else:
             await ctx.channel.send(name + ' is already in the list!')
@@ -281,7 +281,7 @@ async def whitelist_check(ctx):
 
 @client.command()
 @commands.has_role('execs')
-async def remove_whitelist(ctx):
+async def whitelist_remove(ctx):
     '''
     Removes a name from the whitelist
     '''
@@ -293,7 +293,7 @@ async def remove_whitelist(ctx):
             if whitelist[i].strip() == name:
                 whitelist.pop(i)
                 with open(BASE_PATH + 'good_list.txt', 'w') as f:
-                    f.write(whitelist)
+                    f.write(''.join(whitelist))
                 await ctx.channel.send(f'{name} has been removed from the good list!')
                 break
         else:
