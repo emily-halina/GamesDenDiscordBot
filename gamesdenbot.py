@@ -270,7 +270,10 @@ async def whitelist_check(ctx):
         whitelist = list_file.readlines()
         message = '**Whitelist:**\n'
         for name in whitelist:
-            message += f'`{name}`, '
+            message += ' `{name}`,'.format(name= name.strip())
+
+        message = message[0:len(message) - 1]
+        message.strip()
 
         await ctx.channel.send(message)
 
