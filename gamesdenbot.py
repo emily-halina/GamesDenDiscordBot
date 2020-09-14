@@ -251,7 +251,7 @@ async def whitelist_add(ctx):
     '''
     with open(BASE_PATH + 'good_list.txt', 'r') as list_file:
         whitelist = list_file.readlines()
-        name = ctx.message.content[16:]
+        name = ctx.message.content[15:]
 
         if name not in whitelist:
             with open(BASE_PATH + 'good_list.txt', 'a') as f:
