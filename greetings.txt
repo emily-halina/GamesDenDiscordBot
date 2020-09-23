@@ -1,10 +1,18 @@
-Welcome {member.mention}! Just a few things before you get started:
-:teal_bear: Be sure to check out {rules.mention} and message an executive if you have any questions. 
-:yellow_bear: When you're ready, head over to {intro.mention} to introduce yourself
-:orange_bear: and check out {role.mention} to assign yourself some roles based on your disciplines and interests!
+Welcome {member.mention}!
+Just a few things before you get started:
+<:teal_bear:622605840800546848> Be sure to check out {rules.mention} and message an executive if you have any questions. 
+<:yellow_bear:622605945540706305> When you're ready, head over to {intro.mention} to introduce yourself
+<:orange_bear:622605805216202772> and check out {role.mention} to assign yourself some roles based on your disciplines and interests!
 Enjoy your stay in the Games Den!;
-Well, hello there, {member.mention}! Here's some things to check out before you join in on all the fun:
-:teal_bear:Make sure you swing on by {rules.mention} and message an exec if you've got any questions. 
-:yellow_bear: You can also let us know all about you over at {intro.mention} 
-:orange_bear: and check out {role.mention} if you wanna subscribe to notifications based on your interests!
-And most importantly, welcome to the Games Den, have a wonderful stay!
+Well, hello there, {member.mention}!
+Here's some things to check out before you join in on all the fun:
+<:teal_bear:622605840800546848>Make sure you swing on by {rules.mention} and message an exec if you've got any questions. 
+<:yellow_bear:622605945540706305> You can also let us know all about you over at {intro.mention} 
+<:orange_bear:622605805216202772> and check out {role.mention} if you wanna subscribe to notifications based on your interests!
+And most importantly, welcome to the Games Den, have a wonderful stay!;
+Well well, hello there {member.mention}!
+Just a few things before you join in on the fun:
+<:teal_bear:622605840800546848> Check out {rules.mention} and message an exec if you have any questions.
+<:yellow_bear:622605945540706305> Introduce yourself over at {intro.mention}! We'd love to get to know you!
+<:orange_bear:622605805216202772> Check out {role.mention} if you want to get pinged for specific things!
+And most importantly, Welcome to the Games Den! :sparkles:
