@@ -31,7 +31,7 @@ BASE_PATH = os.getenv('BASE_PATH')
 # Get random greetings
 greetings = []
 with open(BASE_PATH + 'greetings.txt', 'r') as f:
-    greetings = f.readlines()
+    greetings = f.read().split(';\n')
 
 client = commands.Bot(command_prefix = '!')
 
@@ -69,7 +69,7 @@ async def on_member_join(member):
     intro = get(server.channels, name='introductions')
     role = get(server.channels, name='role-signup')
 
-    message = random.choice(greetings)
+    message = random.choice(greetings).strip()
     await channel.send(message.format(member = member, rules = rules, intro = intro, role = role))
 
 # leaving message when member leaves server
