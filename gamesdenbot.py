@@ -33,8 +33,10 @@ greetings = []
 with open(BASE_PATH + 'greetings.txt', 'r') as f:
     greetings = f.read().split(';\n')
 
-client = commands.Bot(command_prefix = '!')
+intents = discord.Intents.default() # Needed to enable recieving updates on member join/leave
+intents.members = True
 
+client = commands.Bot(command_prefix = '!', intents=intents)
 
 # list of roles
 roles = {
