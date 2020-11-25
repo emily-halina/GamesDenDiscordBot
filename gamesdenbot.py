@@ -151,7 +151,7 @@ async def on_raw_reaction_add(payload):
         member = server.get_member(payload.user_id)
         if emoji in pronoun_emoji_list:
             if member:
-                role = get(server.roles, name=roles[emoji])
+                role = get(server.roles, name=pronouns[emoji])
                 await member.add_roles(role)
 
 @client.event
@@ -172,7 +172,7 @@ async def on_raw_reaction_remove(payload):
         member = server.get_member(payload.user_id)
         if emoji in pronoun_emoji_list:
             if member:
-                role = get(server.roles, name=roles[emoji])
+                role = get(server.roles, name=pronouns[emoji])
                 await member.remove_roles(role)
 
 @client.command()
