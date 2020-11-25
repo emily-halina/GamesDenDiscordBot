@@ -24,6 +24,7 @@ CURSE_WORDS = CURSE_STRING.split(', ')
 GREETING_CHANNEL = int(os.getenv('GREETING_CHANNEL'))
 BOT_LOG_CHANNEL = int(os.getenv('BOT_LOG_CHANNEL'))
 ROLE_MESSAGE = int(os.getenv('ROLE_MESSAGE'))
+PRONOUN_MESSAGE = int(os.getenv('PRONOUN_MESSAGE'))
 
 # get base path for file sending
 BASE_PATH = os.getenv('BASE_PATH')
@@ -48,7 +49,9 @@ roles = {
 '👔': 'Producer',
 '⚔️': 'Looking for TTRPG',
 '🎲': 'Board Games',
-'🎴': 'Card Games',
+'🎴': 'Card Games'
+}
+pronouns = {
 '❤': 'she/her',
 '🧡': 'they/them',
 '💛': 'he/him',
@@ -56,6 +59,7 @@ roles = {
 '💙': 'he/they'
 }
 role_emoji_list = roles.keys()
+pronoun_emoji_list = pronouns.keys()
 
 @client.event
 async def on_ready():
@@ -142,6 +146,13 @@ async def on_raw_reaction_add(payload):
             if member:
                 role = get(server.roles, name=roles[emoji])
                 await member.add_roles(role)
+    if message_id == PRONOUN_MESSAGE:
+        emoji = payload.emoji.name
+        member = server.get_member(payload.user_id)
+        if emoji in pronoun_emoji_list:
+            if member:
+                role = get(server.roles, name=roles[emoji])
+                await member.add_roles(role)
 
 @client.event
 async def on_raw_reaction_remove(payload):
@@ -153,6 +164,13 @@ async def on_raw_reaction_remove(payload):
         emoji = payload.emoji.name
         member = server.get_member(payload.user_id)
         if emoji in role_emoji_list:
+            if member:
+                role = get(server.roles, name=roles[emoji])
+                await member.remove_roles(role)
+    if message_id == PRONOUN_MESSAGE:
+        emoji = payload.emoji.name
+        member = server.get_member(payload.user_id)
+        if emoji in pronoun_emoji_list:
             if member:
                 role = get(server.roles, name=roles[emoji])
                 await member.remove_roles(role)
