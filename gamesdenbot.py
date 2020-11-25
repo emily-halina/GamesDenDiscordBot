@@ -48,7 +48,12 @@ roles = {
 '👔': 'Producer',
 '⚔️': 'Looking for TTRPG',
 '🎲': 'Board Games',
-'🎴': 'Card Games'
+'🎴': 'Card Games',
+'❤': 'she/her',
+'🧡': 'they/them',
+'💛': 'he/him',
+'💚': 'she/they',
+'💙': 'he/they'
 }
 role_emoji_list = roles.keys()
 
@@ -301,7 +306,7 @@ async def whitelist_remove(ctx):
                 break
         else:
             await ctx.channel.send(f'{name} is not on the list.')
-        
+
 
 
 @client.command()
