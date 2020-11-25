@@ -52,7 +52,7 @@ roles = {
 '🎴': 'Card Games'
 }
 pronouns = {
-'❤': 'she/her',
+'💜': 'she/her',
 '🧡': 'they/them',
 '💛': 'he/him',
 '💚': 'she/they',
