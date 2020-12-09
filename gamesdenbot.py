@@ -335,7 +335,6 @@ async def say(ctx: discord.ext.commands.context.Context):
     '''
     message = ' '.join(ctx.message.content.split()[2:])
     channel = ctx.message.channel_mentions[0]
-    print(type(ctx))
 
     if channel:
         await channel.send(message)
