@@ -326,6 +326,21 @@ async def whitelist_remove(ctx):
             await ctx.channel.send(f'{name} is not on the list.')
 
 
+@client.command()
+@commands.has_role('execs')
+async def say(ctx):
+    '''
+    Makes bearbot say whatever you'd like,
+    wherever you'd like
+    '''
+    message = ' '.join(ctx.message.content.split()[2:])
+    channel = ctx.message.mentions[0]
+
+    if channel:
+        await channel.send(message)
+    else:
+        await ctx.channel.send('Cannot send message.')
+
 
 @client.command()
 @commands.has_role('execs')
