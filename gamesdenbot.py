@@ -328,13 +328,14 @@ async def whitelist_remove(ctx):
 
 @client.command()
 @commands.has_role('execs')
-async def say(ctx):
+async def say(ctx: discord.ext.commands.context.Context):
     '''
     Makes bearbot say whatever you'd like,
     wherever you'd like
     '''
     message = ' '.join(ctx.message.content.split()[2:])
-    channel = ctx.message.mentions[0]
+    channel = ctx.message.channel_mentions[0]
+    print(type(ctx))
 
     if channel:
         await channel.send(message)
