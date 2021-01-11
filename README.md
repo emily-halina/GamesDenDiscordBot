@@ -1,7 +1,7 @@
 # GamesDenDiscordBot
 Small discord bot for the Games Den game development club at University of Alberta.
 
-Written by Eric Halina, with reference to previous bot by Atharv Vohra --> https://github.com/AtharvVohra/BearBot
+Written by Emily Halina, with reference to previous bot by Atharv Vohra --> https://github.com/AtharvVohra/BearBot
 
 ## Includes:
 - join / leave message for users joining and leaving server
