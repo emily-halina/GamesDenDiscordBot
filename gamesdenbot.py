@@ -352,35 +352,51 @@ async def shuffle(ctx):
     '''
     server = client.guilds[0]
     channel_list = server.voice_channels
-    game_chats = []
+    message = ctx.message.split(str=',')
 
+    # find the voice channel in question
     for channel in channel_list:
-        if ctx.message.content[9:] == channel.name:
+        if message[0][9:] == channel.name:
             match = True
             shuffle_channel = channel
-        elif 'Game Chat' in channel.name:
-            game_chats.append(channel)
 
-    if match:
-        random_ids = []
-        member_list = []
-        i = 0
-        # add the appropriate amount of numbers
-        for member in shuffle_channel.members:
-            random_ids.append(i)
-            if i < 2:
-                i += 1
-            else:
-                i = 0
-            member_list.append(member)
-        random.shuffle(random_ids)
-
-        # move members to random channels
-        k = 0
-        for member in member_list:
-            await member.move_to(game_chats[random_ids[k]])
-            k+=1
+    try:
+        num_groups = int(message[1])
+    except:
+        num = False
     else:
+        num = True
+
+    # if the syntax is valid
+    if match and num:
+        # shuffle up the members and disperse them into groups
+        members = shuffle_channel.members
+        random.shuffle(members)
+        master_list = []
+        j = 0
+        for i in range(num):
+            master_list.append([])
+        while len(members) > 0:
+            master_list[j].append(members.pop())
+            # increment j
+            j = (j + 1) % num
+        # send the groups
+        embed = discord.Embed(title="The Fixed Shuffle Command", description=str(num)+"groups", color=0xfc3232)
+        k = 1
+        for group in master_list:
+            name = "Group " + str(k)
+            content = ''
+            for member in group:
+                content += member.nick
+                content += ' '
+            embed.add_field(name=name, value=content, inline=False)
+        await ctx.channel.send(embed=embed)
+        
+    elif !match:
         await ctx.channel.send('Error, not a valid channel!')
+    elif !num:
+        await ctx.channel.send('Error, not a number?')
+    else:
+        await ctx.channel.send('Something about your syntax is Just Wrong. check !help!!!')
 
 client.run(TOKEN)
