@@ -348,20 +348,24 @@ async def shuffle(ctx):
     '''
     shuffles the users in a given voice channel
 
-    takes input in the form of !shuffle Channel Name
+    takes input in the form of !shuffle Channel Name, number of groups
     '''
     server = client.guilds[0]
     channel_list = server.voice_channels
-    message = ctx.message.split(str=',')
+    message = ctx.message.content.split(',')
+    match = False
+    num_groups = 0
 
     # find the voice channel in question
     for channel in channel_list:
         if message[0][9:] == channel.name:
             match = True
             shuffle_channel = channel
+            break
 
     try:
         num_groups = int(message[1])
+        if num_groups < 1: raise Exception()
     except:
         num = False
     else:
@@ -374,28 +378,29 @@ async def shuffle(ctx):
         random.shuffle(members)
         master_list = []
         j = 0
-        for i in range(num):
+        for i in range(num_groups):
             master_list.append([])
         while len(members) > 0:
             master_list[j].append(members.pop())
             # increment j
-            j = (j + 1) % num
+            j = (j + 1) % num_groups
         # send the groups
         embed = discord.Embed(title="The Fixed Shuffle Command", description=str(num)+"groups", color=0xfc3232)
         k = 1
         for group in master_list:
             name = "Group " + str(k)
+            k += 1
             content = ''
             for member in group:
                 content += member.nick
-                content += ' '
+                content += ', '
             embed.add_field(name=name, value=content, inline=False)
         await ctx.channel.send(embed=embed)
         
-    elif !match:
+    elif not match:
         await ctx.channel.send('Error, not a valid channel!')
-    elif !num:
-        await ctx.channel.send('Error, not a number?')
+    elif not num:
+        await ctx.channel.send('Error, not a valid number!')
     else:
         await ctx.channel.send('Something about your syntax is Just Wrong. check !help!!!')
 
