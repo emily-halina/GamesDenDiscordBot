@@ -238,7 +238,7 @@ async def roll(ctx):
     await ctx.channel.send(embed=roll_embed)
 
 @client.command()
-@commands.has_role('execs')
+@commands.has_role('Execs')
 async def nickname_check(ctx):
     '''
     if someone hasn't changed their username, tattle on them
@@ -269,7 +269,7 @@ async def nickname_check(ctx):
         await ctx.channel.send(embed=message)
 
 @client.command()
-@commands.has_role('execs')
+@commands.has_role('Execs')
 async def whitelist_add(ctx):
     '''
     Adds a user to the good boyz/girlz/enbiez list even if they haven't
@@ -287,7 +287,7 @@ async def whitelist_add(ctx):
             await ctx.channel.send(name + ' is already in the list!')
 
 @client.command()
-@commands.has_role('execs')
+@commands.has_role('Execs')
 async def whitelist_check(ctx):
     '''
     Lists all the members in the good list, for auditing
@@ -306,7 +306,7 @@ async def whitelist_check(ctx):
         await ctx.channel.send(message)
 
 @client.command()
-@commands.has_role('execs')
+@commands.has_role('Execs')
 async def whitelist_remove(ctx):
     '''
     Removes a name from the whitelist
@@ -327,7 +327,7 @@ async def whitelist_remove(ctx):
 
 
 @client.command()
-@commands.has_role('execs')
+@commands.has_role('Execs')
 async def say(ctx: discord.ext.commands.context.Context):
     '''
     Makes bearbot say whatever you'd like,
@@ -343,7 +343,7 @@ async def say(ctx: discord.ext.commands.context.Context):
 
 
 @client.command()
-@commands.has_role('execs')
+@commands.has_role('Execs')
 async def shuffle(ctx):
     '''
     shuffles the users in a given voice channel
