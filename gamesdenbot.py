@@ -273,8 +273,10 @@ async def dq(ctx):
     '''
     Gets the first question in the queue and posts it
     '''
+    if len(questions) == 0:
+        return await ctx.channel.send('No messages in the queue.')
     question = questions.pop(0)
-    message = discord.Embed(title="question", color=0xf2e835)
+    message = discord.Embed(title="Question", color=0xf2e835)
     message.add_field(name=question["author"], value=question["message"], inline=False)
     message.add_field(name='Questions left', value=len(questions), inline=False)
 
