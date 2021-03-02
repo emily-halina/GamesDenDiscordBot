@@ -62,6 +62,8 @@ pronouns = {
 role_emoji_list = roles.keys()
 pronoun_emoji_list = pronouns.keys()
 
+questions = []
+
 @client.event
 async def on_ready():
     # find the servers bot is connected to, and print their names and ids
@@ -251,6 +253,32 @@ async def roll(ctx):
         await ctx.channel.send('Error! This command takes input in the format of AdB + C')
         return
     await ctx.channel.send(embed=roll_embed)
+
+@client.command()
+async def q(ctx):
+    '''
+    Adds a question to the question queue
+    '''
+    question = {
+        "message": ctx.message.content[3:],
+        "author": ctx.author
+    }
+    questions.append(question)
+    
+    await ctx.channel.send(f'Added question! There\'s now **{len(questions)}** in the queue.')
+
+@client.command()
+@commands.has_role('Execs')
+async def dq(ctx):
+    '''
+    Gets the first question in the queue and posts it
+    '''
+    question = questions.pop(0)
+    message = discord.Embed(title="question", color=0xf2e835)
+    message.add_field(name=question["author"], value=question["message"], inline=False)
+    message.add_field(name='Questions left', value=len(questions), inline=False)
+
+    await ctx.channel.send(embed=message)
 
 @client.command()
 @commands.has_role('Execs')
