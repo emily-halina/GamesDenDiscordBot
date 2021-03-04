@@ -258,6 +258,7 @@ async def roll(ctx):
 async def q(ctx):
     '''
     Adds a question to the question queue
+    Usage: !q [Question]
     '''
     question = {
         "message": ctx.message.content[3:],
@@ -272,7 +273,12 @@ async def q(ctx):
 async def dq(ctx):
     '''
     Gets the first question in the queue and posts it
+    Use !dq all to clear the queue
     '''
+    if len(ctx.message.content) > 3:
+        if ctx.message.content.split(' ')[1].strip() == 'all':
+            questions = []
+            return ctx.channel.send('Cleared all questions in the queue!')
     if len(questions) == 0:
         return await ctx.channel.send('No messages in the queue.')
     question = questions.pop(0)
