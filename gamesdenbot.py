@@ -278,7 +278,7 @@ async def dq(ctx):
     if len(ctx.message.content) > 3:
         if ctx.message.content.split(' ')[1].strip() == 'all':
             questions = []
-            return ctx.channel.send('Cleared all questions in the queue!')
+            return await ctx.channel.send('Cleared all questions in the queue!')
     if len(questions) == 0:
         return await ctx.channel.send('No messages in the queue.')
     question = questions.pop(0)
