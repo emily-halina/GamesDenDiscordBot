@@ -275,12 +275,12 @@ async def dq(ctx):
     Gets the first question in the queue and posts it
     Use !dq all to clear the queue
     '''
-    if len(ctx.message.content) > 3:
-        if ctx.message.content.split(' ')[1].strip() == 'all':
-            questions = []
-            return await ctx.channel.send('Cleared all questions in the queue!')
     if len(questions) == 0:
         return await ctx.channel.send('No messages in the queue.')
+    if len(ctx.message.content) > 3:
+        if ctx.message.content.split(' ')[1].strip() == 'all':
+            questions.clear()
+            return await ctx.channel.send('Cleared all questions in the queue!')
     question = questions.pop(0)
     message = discord.Embed(title="Question", color=0xf2e835)
     message.add_field(name=question["author"], value=question["message"], inline=False)
