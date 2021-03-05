@@ -286,7 +286,7 @@ async def dq(ctx):
     message.add_field(name=question["author"], value=question["message"], inline=False)
     message.add_field(name='Questions left', value=len(questions), inline=False)
 
-    await ctx.channel.send(content='@Speaker', embed=message)
+    await ctx.channel.send(content='<@&817218239888359465>', embed=message)
 
 @client.command()
 @commands.has_role('Execs')
