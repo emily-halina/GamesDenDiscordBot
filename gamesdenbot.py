@@ -269,7 +269,7 @@ async def q(ctx):
     await ctx.channel.send(f'Added question! There\'s now **{len(questions)}** in the queue.')
 
 @client.command()
-@commands.has_role('Execs')
+@commands.has_role('Speaker')
 async def dq(ctx):
     '''
     Gets the first question in the queue and posts it
@@ -286,7 +286,7 @@ async def dq(ctx):
     message.add_field(name=question["author"], value=question["message"], inline=False)
     message.add_field(name='Questions left', value=len(questions), inline=False)
 
-    await ctx.channel.send(embed=message)
+    await ctx.channel.send(content='@speaker', embed=message)
 
 @client.command()
 @commands.has_role('Execs')
