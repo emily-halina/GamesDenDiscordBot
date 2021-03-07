@@ -65,7 +65,7 @@ pronoun_emoji_list = pronouns.keys()
 questions = []
 async def is_exec_or_speaker(ctx):
     for role in ctx.author.roles:
-        if role.name == 'Execs' or role.name == 'Speaker':
+        if role.name == 'Execs' or role.name == 'Speaker' or role.name == 'Chairs':
             return True
     return False
 
