@@ -63,6 +63,11 @@ role_emoji_list = roles.keys()
 pronoun_emoji_list = pronouns.keys()
 
 questions = []
+async def is_exec_or_speaker(ctx):
+    for role in ctx.author.roles:
+        if role.name == 'Execs' or role.name == 'Speaker':
+            return True
+    return False
 
 @client.event
 async def on_ready():
@@ -269,7 +274,7 @@ async def q(ctx):
     await ctx.channel.send(f'Added question! There\'s now **{len(questions)}** in the queue.')
 
 @client.command()
-@commands.has_role('Speaker')
+@commands.check(is_exec_or_speaker)
 async def dq(ctx):
     '''
     Gets the first question in the queue and posts it
