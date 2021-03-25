@@ -269,6 +269,8 @@ async def q(ctx):
         "message": ctx.message.content[3:],
         "author": ctx.author
     }
+    if len(question["message"]) == 0:
+        return await ctx.channel.send('No question found! Make sure you have a question in the message!')
     questions.append(question)
     
     await ctx.channel.send(f'Added question! There\'s now **{len(questions)}** in the queue.')

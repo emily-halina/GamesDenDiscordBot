@@ -1,6 +1,6 @@
 Welcome {member.mention}! Enjoy your stay in the Games Den!;
 Well, hello there, {member.mention}! Welcome to the Games Den, have a wonderful stay!;
 Well well, hello there {member.mention}! Welcome to the Games Den! :sparkles:;
-Greetings fellow Denizen, {member.mention}! Get cozy and enojy your stay here!
+Greetings fellow Denizen, {member.mention}! Get cozy and enjoy your stay here!;
 Hi, hello, welcome, {member.mention}! I'm a bot and I'm hoping that you have a wonderful stay here at the Games Den!;
 Hiya! We hope you enjoy your stay here, {member.mention}! It's gonna be a cozy stay!
