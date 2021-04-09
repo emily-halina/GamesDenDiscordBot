@@ -172,7 +172,7 @@ async def on_raw_reaction_add(payload):
     if message_id == WEST_MARCHES_MESSAGE:
         emoji = payload.emoji.name
         member = server.get_member(payload.user_id)
-        if emoji == 'compass':
+        if emoji == '🧭':
             if member:
                 role = get(server.roles, name = 'dnd-west-marches')
                 await member.add_roles(role)
