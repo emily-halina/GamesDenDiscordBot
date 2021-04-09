@@ -26,6 +26,7 @@ BOT_LOG_CHANNEL = int(os.getenv('BOT_LOG_CHANNEL'))
 ROLE_MESSAGE = int(os.getenv('ROLE_MESSAGE'))
 PRONOUN_MESSAGE = int(os.getenv('PRONOUN_MESSAGE'))
 DENIZEN_MESSAGE = int(os.getenv('DENIZEN_MESSAGE'))
+WEST_MARCHES_MESSAGE = int(os.getenv('WEST_MARCHES_MESSAGE'))
 
 # get base path for file sending
 BASE_PATH = os.getenv('BASE_PATH')
@@ -168,6 +169,13 @@ async def on_raw_reaction_add(payload):
             if member:
                 role = get(server.roles, name='Denizens')
                 await member.add_roles(role)
+    if message_id == WEST_MARCHES_MESSAGE:
+        emoji = payload.emoji.name
+        member = server.get_member(payload.user_id)
+        if emoji == 'compass':
+            if member:
+                role = get(server.roles, name = 'dnd-west-marches')
+                await member.add_roles(role)
 
 @client.event
 async def on_raw_reaction_remove(payload):
@@ -195,6 +203,13 @@ async def on_raw_reaction_remove(payload):
         if emoji == 'main_bear':
             if member:
                 role = get(server.roles, name='Denizens')
+                await member.remove_roles(role)
+    if message_id == WEST_MARCHES_MESSAGE:
+        emoji = payload.emoji.name
+        member = server.get_member(payload.user_id)
+        if emoji == 'compass':
+            if member:
+                role = get(server.roles, name = 'dnd-west-marches')
                 await member.remove_roles(role)
 
 @client.command()
