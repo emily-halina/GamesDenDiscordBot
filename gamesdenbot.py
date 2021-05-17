@@ -6,7 +6,6 @@ from discord.ext import commands
 from discord.utils import get
 
 import os
-import dotenv
 from datetime import datetime
 from dotenv import load_dotenv
 
