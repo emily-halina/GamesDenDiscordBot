@@ -1,5 +1,5 @@
-# Games Den Bot v0.1
-# small bot for Games Den discord server
+# Games Den Bot: West Marches Edition
+# An edited edition of Bear Bot, with changed functionality for the WM server!
 
 import discord
 from discord.ext import commands
@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 
 import random
 from dnd_dice_roller import parse_dice_rolls
+from west_marches import *
 
 # load up attributes from .env file
 load_dotenv()
@@ -19,48 +20,13 @@ SERVER = os.getenv('DISCORD_SERVER')
 CURSE_STRING = os.getenv('CURSE_WORDS')
 CURSE_WORDS = CURSE_STRING.split(', ')
 
-# specific channel / message ids: change based on your server
-GREETING_CHANNEL = int(os.getenv('GREETING_CHANNEL'))
 BOT_LOG_CHANNEL = int(os.getenv('BOT_LOG_CHANNEL'))
-ROLE_MESSAGE = int(os.getenv('ROLE_MESSAGE'))
-PRONOUN_MESSAGE = int(os.getenv('PRONOUN_MESSAGE'))
-DENIZEN_MESSAGE = int(os.getenv('DENIZEN_MESSAGE'))
-WEST_MARCHES_MESSAGE = int(os.getenv('WEST_MARCHES_MESSAGE'))
-
-# get base path for file sending
-BASE_PATH = os.getenv('BASE_PATH')
-
-# Get random greetings
-greetings = []
-with open(BASE_PATH + 'greetings.txt', 'r') as f:
-    greetings = f.read().split(';\n')
 
 intents = discord.Intents.default() # Needed to enable recieving updates on member join/leave
 intents.members = True
 
 client = commands.Bot(command_prefix = '!', intents=intents)
 
-# list of roles
-roles = {
-'🖌️': 'Artist',
-'🖥️': 'Programmer',
-'🗺': 'Designer',
-'📝': 'Writer',
-'🎵': 'Audio',
-'👔': 'Producer',
-'⚔️': 'Looking for TTRPG',
-'🎲': 'Board Games',
-'🎴': 'Card Games'
-}
-pronouns = {
-'💜': 'she/her',
-'🧡': 'they/them',
-'💛': 'he/him',
-'💚': 'she/they',
-'💙': 'he/they'
-}
-role_emoji_list = roles.keys()
-pronoun_emoji_list = pronouns.keys()
 
 questions = []
 async def is_exec_or_speaker(ctx):
@@ -79,17 +45,6 @@ async def on_ready():
     print(f'{client.user} has connected to Discord:\n'
         f'{guild.name}(id: {guild.id})'
     )
-# greeting message when member joins server
-@client.event
-async def on_member_join(member):
-    server = client.guilds[0]
-    channel = client.get_channel(GREETING_CHANNEL)
-    rules = get(server.channels, name='rules-and-info')
-    intro = get(server.channels, name='introductions')
-    role = get(server.channels, name='role-signup')
-
-    message = random.choice(greetings).strip()
-    await channel.send(message.format(member = member, rules = rules, intro = intro, role = role))
 
 # leaving message when member leaves server
 @client.event
@@ -119,12 +74,10 @@ async def on_message(message):
 
                 await log.send(embed=audit_embed)
                 break
+
     # let them say that
     if 'uwu' in content and not message.author.bot:
-        if random.randint(1, 10) == 1:
-            await message.channel.send(file=discord.File(BASE_PATH + 'uwu.png'))
-        else:
-            await message.channel.send('owo')
+        await message.channel.send('owo')
     if 'owo' in content and not message.author.bot:
         await message.channel.send('uwu')
     if 'uwo' in content and not message.author.bot:
@@ -138,78 +91,6 @@ async def on_message(message):
 async def on_command_error(message, error):
     if isinstance(error, commands.CommandNotFound):
         pass
-
-# assign roles based on reaction to specific message
-# note: on_raw_reaction_add is used rather than on_reaction_add to avoid issues with the bot forgetting all messages before it is turned on
-@client.event
-async def on_raw_reaction_add(payload):
-    # collect info from the payload
-    message_id = payload.message_id
-    server = client.guilds[0]
-    # only check the emotes on one specific message
-    if message_id == ROLE_MESSAGE:
-        emoji = payload.emoji.name
-        member = server.get_member(payload.user_id)
-        if emoji in role_emoji_list:
-            if member:
-                role = get(server.roles, name=roles[emoji])
-                await member.add_roles(role)
-    if message_id == PRONOUN_MESSAGE:
-        emoji = payload.emoji.name
-        member = server.get_member(payload.user_id)
-        if emoji in pronoun_emoji_list:
-            if member:
-                role = get(server.roles, name=pronouns[emoji])
-                await member.add_roles(role)
-    if message_id == DENIZEN_MESSAGE:
-        emoji = payload.emoji.name
-        member = server.get_member(payload.user_id)
-        if emoji == 'main_bear':
-            if member:
-                role = get(server.roles, name='Denizens')
-                await member.add_roles(role)
-    if message_id == WEST_MARCHES_MESSAGE:
-        emoji = payload.emoji.name
-        member = server.get_member(payload.user_id)
-        if emoji == '🧭':
-            if member:
-                role = get(server.roles, name = 'dnd-west-marches')
-                await member.add_roles(role)
-
-@client.event
-async def on_raw_reaction_remove(payload):
-    # collect info from the payload
-    message_id = payload.message_id
-    server = client.guilds[0]
-    # only check the emotes on one specific message
-    if message_id == ROLE_MESSAGE:
-        emoji = payload.emoji.name
-        member = server.get_member(payload.user_id)
-        if emoji in role_emoji_list:
-            if member:
-                role = get(server.roles, name=roles[emoji])
-                await member.remove_roles(role)
-    if message_id == PRONOUN_MESSAGE:
-        emoji = payload.emoji.name
-        member = server.get_member(payload.user_id)
-        if emoji in pronoun_emoji_list:
-            if member:
-                role = get(server.roles, name=pronouns[emoji])
-                await member.remove_roles(role)
-    if message_id == DENIZEN_MESSAGE:
-        emoji = payload.emoji.name
-        member = server.get_member(payload.user_id)
-        if emoji == 'main_bear':
-            if member:
-                role = get(server.roles, name='Denizens')
-                await member.remove_roles(role)
-    if message_id == WEST_MARCHES_MESSAGE:
-        emoji = payload.emoji.name
-        member = server.get_member(payload.user_id)
-        if emoji == 'compass':
-            if member:
-                role = get(server.roles, name = 'dnd-west-marches')
-                await member.remove_roles(role)
 
 @client.command()
 async def roll(ctx):
@@ -273,135 +154,9 @@ async def roll(ctx):
         return
     await ctx.channel.send(embed=roll_embed)
 
-@client.command()
-async def q(ctx):
-    '''
-    Adds a question to the question queue
-    Usage: !q [Question]
-    '''
-    question = {
-        "message": ctx.message.content[3:],
-        "author": ctx.author
-    }
-    if len(question["message"]) == 0:
-        return await ctx.channel.send('No question found! Make sure you have a question in the message!')
-    questions.append(question)
-    
-    await ctx.channel.send(f'Added question! There\'s now **{len(questions)}** in the queue.')
 
 @client.command()
-@commands.check(is_exec_or_speaker)
-async def dq(ctx):
-    '''
-    Gets the first question in the queue and posts it
-    Use !dq all to remove all questions or !dq list to see how many are left
-    '''
-    if len(questions) == 0:
-        return await ctx.channel.send('No messages in the queue.')
-    if len(ctx.message.content) > 3:
-        if ctx.message.content.split(' ')[1].strip().lower() == 'all':
-            questions.clear()
-            return await ctx.channel.send('Cleared all questions in the queue!')
-        if ctx.message.content.split(' ')[1].strip().lower() == 'list':
-            return await ctx.channel.send(f'There are **{len(questions)}** questions in the queue.')
-    question = questions.pop(0)
-    message = discord.Embed(title="Question", color=0xf2e835)
-    message.add_field(name=question["author"], value=question["message"], inline=False)
-    message.add_field(name='Questions left', value=len(questions), inline=False)
-
-    await ctx.channel.send(content='<@&817218239888359465>', embed=message)
-
-@client.command()
-@commands.has_role('Execs')
-async def nickname_check(ctx):
-    '''
-    if someone hasn't changed their username, tattle on them
-    '''
-    member_list = client.guilds[0].members
-    join_list = []
-    with open(BASE_PATH + 'good_list.txt', 'r') as f:
-        whitelist = f.readlines()
-        for member in member_list:
-            if member.nick == None:
-                if f'{str(member)}\n' not in whitelist:
-                    join_list.append(member)
-    join_list.sort(key=lambda member: member.joined_at)
-    embed = discord.Embed(title='Nickname Check', description='bad boyz girlz and enbiez', color=0x709cdb)
-    embed_limit = 20
-    e = 1
-    embed_list = []
-    for member in join_list:
-        embed.add_field(name=member.name + '#' + str(member.discriminator), value=str(member.joined_at), inline=False)
-        e += 1
-        if e > embed_limit:
-            embed_list.append(embed)
-            embed = discord.Embed(title='Nickname Check', description='bad boyz girlz and enbiez', color=0x709cdb)
-            e = 1
-    if e != 1:
-        embed_list.append(embed)
-    for message in embed_list:
-        await ctx.channel.send(embed=message)
-
-@client.command()
-@commands.has_role('Execs')
-async def whitelist_add(ctx):
-    '''
-    Adds a user to the good boyz/girlz/enbiez list even if they haven't
-    changed their username
-    '''
-    with open(BASE_PATH + 'good_list.txt', 'r') as list_file:
-        whitelist = list_file.readlines()
-        name = ctx.message.content[15:]
-
-        if name not in whitelist:
-            with open(BASE_PATH + 'good_list.txt', 'a') as f:
-                f.write('\n' + name)
-            await ctx.channel.send('Added ' + name + ' to the good boyz/girlz/enbiez list')
-        else:
-            await ctx.channel.send(name + ' is already in the list!')
-
-@client.command()
-@commands.has_role('Execs')
-async def whitelist_check(ctx):
-    '''
-    Lists all the members in the good list, for auditing
-    '''
-    with open(BASE_PATH + 'good_list.txt', 'r') as list_file:
-        whitelist = list_file.readlines()
-        whitelist.sort(key= lambda name: name.lower())
-        message = '**Whitelist:**\n```'
-        for count in range(len(whitelist)):
-            message += '{name}'.format(name= whitelist[count].strip())
-            if count != len(whitelist) - 1:
-                message += ', '
-
-        message += '```'
-
-        await ctx.channel.send(message)
-
-@client.command()
-@commands.has_role('Execs')
-async def whitelist_remove(ctx):
-    '''
-    Removes a name from the whitelist
-    '''
-    with open(BASE_PATH + 'good_list.txt', 'r') as list_file:
-        whitelist = list_file.readlines()
-        name = ctx.message.content[18:]
-
-        for i in range(len(whitelist)):
-            if whitelist[i].strip() == name:
-                whitelist.pop(i)
-                with open(BASE_PATH + 'good_list.txt', 'w') as f:
-                    f.write(''.join(whitelist))
-                await ctx.channel.send(f'{name} has been removed from the good list!')
-                break
-        else:
-            await ctx.channel.send(f'{name} is not on the list.')
-
-
-@client.command()
-@commands.has_role('Execs')
+@commands.has_role('Dungeon Masters')
 async def say(ctx: discord.ext.commands.context.Context):
     '''
     Makes bearbot say whatever you'd like,
@@ -415,67 +170,139 @@ async def say(ctx: discord.ext.commands.context.Context):
     else:
         await ctx.channel.send('Cannot send message.')
 
+# WM specific commands
+@client.command()
+async def createChar(ctx):
+    '''
+    Creates a character for West Marches.
+    Usage: !create_char character_name gold
+    '''
+    content = ctx.message.content.split()
+    if len(content) == 3:
+        try:
+            result = create_char(content[1], ctx.author.name, content[2])
+        except Exception as e:
+            await ctx.channel.send("Usage: !createChar character_name starting_gold")
+        else:
+            await ctx.channel.send(result)
+    else:
+        await ctx.channel.send("Usage: !createChar character_name starting_gold")
 
 @client.command()
-@commands.has_role('Execs')
-async def shuffle(ctx):
+async def gainEXP(ctx):
     '''
-    shuffles the users in a given voice channel
-
-    takes input in the form of !shuffle Channel Name, number of groups
+    Gains a character's exp based on the session they just completed.
+    Usage: !gainEXP charater_name encounter_level
     '''
-    server = client.guilds[0]
-    channel_list = server.voice_channels
-    message = ctx.message.content.split(',')
-    match = False
-    num_groups = 0
-
-    # find the voice channel in question
-    for channel in channel_list:
-        if message[0][9:] == channel.name:
-            match = True
-            shuffle_channel = channel
-            break
-
-    try:
-        num_groups = int(message[1])
-        if num_groups < 1: raise Exception()
-    except:
-        num = False
+    content = ctx.message.content.split()
+    if len(content) == 3:
+        try:
+            result = gain_exp(content[1], ctx.author.name, int(content[2]))
+        except Exception as e:
+            await ctx.channel.send("Usage: !gainEXP charater_name encounter_level")
+        else:
+            await ctx.channel.send(result)
     else:
-        num = True
+        await ctx.channel.send("Usage: !gainEXP charater_name encounter_level")
 
-    # if the syntax is valid
-    if match and num:
-        # shuffle up the members and disperse them into groups
-        members = shuffle_channel.members
-        random.shuffle(members)
-        master_list = []
-        j = 0
-        for i in range(num_groups):
-            master_list.append([])
-        while len(members) > 0:
-            master_list[j].append(members.pop())
-            # increment j
-            j = (j + 1) % num_groups
-        # send the groups
-        embed = discord.Embed(title="The Fixed Shuffle Command", description=str(num)+"groups", color=0xfc3232)
-        k = 1
-        for group in master_list:
-            name = "Group " + str(k)
-            k += 1
-            content = ''
-            for member in group:
-                content += member.nick
-                content += ', '
-            embed.add_field(name=name, value=content, inline=False)
-        await ctx.channel.send(embed=embed)
-        
-    elif not match:
-        await ctx.channel.send('Error, not a valid channel!')
-    elif not num:
-        await ctx.channel.send('Error, not a valid number!')
+
+@client.command()
+async def gainGold(ctx):
+    '''
+    Adds gold to a character. Only takes positive values.
+    Usage: !gainGold character_name gold_value
+    '''
+    content = ctx.message.content.split()
+    if len(content) == 3:
+        try:
+            if int(content[2]) <= 0:
+                raise Exception
+            result = change_gold(content[1], ctx.author.name, int(content[2]))
+        except Exception as e:
+            await ctx.channel.send("Usage: !gainGold charater_name gold_value (positive)")
+        else:
+            await ctx.channel.send(result)
     else:
-        await ctx.channel.send('Something about your syntax is Just Wrong. check !help!!!')
+        await ctx.channel.send("Usage: !gainGold charater_name encounter_level")
+
+@client.command()
+async def spendGold(ctx):
+    '''
+    Removes gold from a character. Only takes positive values.
+    Usage: !spendGold character_name gold_value
+    '''
+    content = ctx.message.content.split()
+    if len(content) == 3:
+        try:
+            if int(content[2]) <= 0:
+                raise Exception
+            result = change_gold(content[1], ctx.author.name, int(content[2]) * (-1))
+        except Exception as e:
+            await ctx.channel.send("Usage: !spendGold charater_name gold_value (positive)")
+        else:
+            await ctx.channel.send(result)
+    else:
+        await ctx.channel.send("Usage: !spendGold charater_name encounter_level")
+
+@client.command()
+async def charStatus(ctx):
+    '''
+    Checks on a character's status. Displays the info the bot stores!
+    Usage: !charStatus character_name
+    '''
+    content = ctx.message.content.split()
+    if len(content) == 2:
+        try:
+            char = get_status(content[1])
+        except Exception as e:
+            await ctx.channel.send("Usage: !charStatus character_name")
+        else:
+            char_embed = discord.Embed(title="Character Status", description=char[0], color=0x709cdb)
+            char_embed.add_field(name="Player", value=char[1], inline=False)
+            char_embed.add_field(name="Current Level", value=char[2], inline=False)
+            char_embed.add_field(name="EXP to Next Level", value=str(char[3]), inline=False)
+            char_embed.add_field(name="Gold", value=char[4], inline=False)
+            char_embed.add_field(name="Guild Coins", value=char[5], inline=False)
+            await ctx.channel.send(embed=char_embed)
+    else:
+        await ctx.channel.send("Usage: !charStatus character_name")
+
+@client.command()
+@commands.has_role('Dungeon Masters')
+async def gainGC(ctx):
+    '''
+    Adds guild coins to the given character's stats.
+    Usage: !gainGC character_name gc_value (positive)
+    '''
+    content = ctx.message.content.split()
+    if len(content) == 3:
+        try:
+            result = change_GC(content[1], ctx.author.name, int(content[2]))
+        except Exception as e:
+            await ctx.channel.send("Usage: !gainGC character_name gc_value (positive)")
+        else:
+            await ctx.channel.send(result)
+    else:
+        await ctx.channel.send("Usage: !gainGC character_name gc_value (positive)")
+
+@client.command()
+@commands.has_role('Dungeon Masters')
+async def spendGC(ctx):
+    '''
+    Adds guild coins to the given character's stats.
+    Usage: !spendGC character_name gc_value (positive)
+    '''
+    content = ctx.message.content.split()
+    if len(content) == 3:
+        try:
+            if int(content[2]) < 0:
+                raise Exception
+            result = change_GC(content[1], ctx.author.name, int(content[2]) * -1)
+        except Exception as e:
+            await ctx.channel.send("Usage: !spendGC character_name gc_value (positive)")
+        else:
+            await ctx.channel.send(result)
+    else:
+        await ctx.channel.send("Usage: !spendGC character_name gc_value (positive)")
 
 client.run(TOKEN)
