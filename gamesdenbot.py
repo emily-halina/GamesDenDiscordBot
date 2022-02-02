@@ -29,7 +29,7 @@ DENIZEN_MESSAGE = int(os.getenv('DENIZEN_MESSAGE'))
 WEST_MARCHES_MESSAGE = int(os.getenv('WEST_MARCHES_MESSAGE'))
 
 # get base path for file sending
-BASE_PATH = os.getenv('BASE_PATH')
+BASE_PATH = os.getenv('BASE_PATH') + '/'
 
 # Get random greetings
 greetings = []
@@ -108,7 +108,7 @@ async def on_message(message):
     if not message.channel.is_nsfw() and not message.author.bot:
         for curse in CURSE_WORDS:
             if curse in content:
-                if str(message.author) == 'TheArcticGiraffe#5863':
+                if str(message.author) == 'AttacktoWin#7991':
                     await message.channel.send("Hey, please check your mess- Oh, I'm sorry Mr. President, I didn't realize it was you! I'll look the other way this time but please watch your language in the future!")
                 else:
                     await message.channel.send('Hey, please check your message for swears!')
