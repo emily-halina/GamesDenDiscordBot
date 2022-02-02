@@ -29,7 +29,7 @@ DENIZEN_MESSAGE = int(os.getenv('DENIZEN_MESSAGE'))
 WEST_MARCHES_MESSAGE = int(os.getenv('WEST_MARCHES_MESSAGE'))
 
 # get base path for file sending
-BASE_PATH = os.getenv('BASE_PATH') + '/'
+BASE_PATH = os.getenv('BASE_PATH')
 
 # Get random greetings
 greetings = []
@@ -108,7 +108,7 @@ async def on_message(message):
     if not message.channel.is_nsfw() and not message.author.bot:
         for curse in CURSE_WORDS:
             if curse in content:
-                if str(message.author) == 'AttacktoWin#7991':
+                if str(message.author) == 'TheArcticGiraffe#5863':
                     await message.channel.send("Hey, please check your mess- Oh, I'm sorry Mr. President, I didn't realize it was you! I'll look the other way this time but please watch your language in the future!")
                 else:
                     await message.channel.send('Hey, please check your message for swears!')
@@ -121,17 +121,35 @@ async def on_message(message):
                 await log.send(embed=audit_embed)
                 break
     # let them say that
-    if 'uwu' in content and not message.author.bot:
-        if random.randint(1, 10) == 1:
-            await message.channel.send(file=discord.File(BASE_PATH + 'uwu.png'))
-        else:
-            await message.channel.send('owo')
-    if 'owo' in content and not message.author.bot:
-        await message.channel.send('uwu')
-    if 'uwo' in content and not message.author.bot:
-        await message.channel.send('owu')
-    if 'owu' in content and not message.author.bot:
-        await message.channel.send('uwo')
+    if (not message.author.bot):
+        if 'uwu' in content:
+            if random.randint(1, 10) == 1:
+                await message.channel.send(file=discord.File(BASE_PATH + 'uwu.png'))
+            else:
+                await message.channel.send('owo')
+        if 'owo' in content:
+            await message.channel.send('uwu')
+
+        if 'uwo' in content:
+            await message.channel.send('owu')
+        if 'owu' in content:
+            await message.channel.send('uwo')
+
+        if 'ovo' in content:
+            await message.channel.send('uvu')
+        if 'uvu' in content:
+            await message.channel.send('ovo')
+
+        if '-w-' in content:
+            await message.channel.send('^w^')
+        if '^w^' in content:
+            await message.channel.send('-w-')
+
+        if '-wo' in content:
+            await message.channel.send('ow-')
+        if 'ow-' in content:
+            await message.channel.send('-wo')
+
     await client.process_commands(message)
 
 # error handling for commands not existing
