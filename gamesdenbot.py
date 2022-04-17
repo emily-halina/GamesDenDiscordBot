@@ -51,7 +51,8 @@ roles = {
 '👔': 'Producer',
 '⚔️': 'Looking for TTRPG',
 '🎲': 'Board Games',
-'🎴': 'Card Games'
+'🎴': 'Card Games',
+'🧩': "saturday-dev-meet",
 }
 pronouns = {
 '💜': 'she/her',
