@@ -5,7 +5,7 @@ Written by Emily Halina & maintained by Shashank Bhat, with reference to previou
 
 ## CI Status
 
-[![CI](https://github.com/jamievlin/GamesDenDiscordBot/actions/workflows/ci.yml/badge.svg)](https://github.com/jamievlin/GamesDenDiscordBot/actions/workflows/ci.yml)
+[![CI](https://github.com/emily-halina/GamesDenDiscordBot/actions/workflows/ci.yml/badge.svg)](https://github.com/emily-halina/GamesDenDiscordBot/actions/workflows/ci.yml)
 
 ## Includes:
 - join / leave message for users joining and leaving server
