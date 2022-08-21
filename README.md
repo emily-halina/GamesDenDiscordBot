@@ -31,3 +31,8 @@ BASE_PATH = path/to/this/folder
 ## To add:
 - editable / quotable rules text
 - more to come
+
+
+## Development guide
+
+This repository uses black linter for style check. Please use that code style when updating code.

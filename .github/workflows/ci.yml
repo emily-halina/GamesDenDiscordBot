@@ -2,7 +2,7 @@ name: CI
 on: [push]
 
 jobs:
-  black:
+  precheck:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -10,3 +10,12 @@ jobs:
       - name: black linter
         shell: bash
         run: python3 -m black . --check
+  qodana:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/initialize-runner
+      - name: 'Qodana Scan'
+        uses: JetBrains/qodana-action@v2022.2.1
