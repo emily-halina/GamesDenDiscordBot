@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Games Den Bot v0.1
 # small bot for Games Den discord server
 
