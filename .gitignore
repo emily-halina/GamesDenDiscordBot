@@ -3,3 +3,8 @@
 .pyc
 __pychache__
 good_list.txt
+
+# Intellij+all
+.idea
+venv
+.vscode
