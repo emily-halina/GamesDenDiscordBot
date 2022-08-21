@@ -3,33 +3,36 @@
 
 import random
 
+
 def main():
     input = get_input()
     parse_dice_rolls(input)
 
+
 def get_input():
-    return input('Enter your dice roll! ')
+    return input("Enter your dice roll! ")
+
 
 def parse_dice_rolls(input):
     # parse the input into a list
-    input = input.replace(' ', '')
-    input = input.replace('💯', '100') # 💯
-    if input == '':
+    input = input.replace(" ", "")
+    input = input.replace("💯", "100")  # 💯
+    if input == "":
         return random.randint(1, 100)
     input_list = []
     modifier = 0
-    chunk = ''
+    chunk = ""
     add_sub = True
 
     for c in input:
-        if c != '+' and c != '-':
+        if c != "+" and c != "-":
             chunk += c
         else:
             input_list.append(chunk)
             input_list.append(c)
-            chunk = ''
+            chunk = ""
 
-    if chunk != '':
+    if chunk != "":
         input_list.append(chunk)
 
     running_total = []
@@ -38,43 +41,43 @@ def parse_dice_rolls(input):
     for item in input_list:
         item = item.lower()
         # this is a dice
-        if 'd' in item:
+        if "d" in item:
             new_dice = []
-            new_dice.append(item + ':')
+            new_dice.append(item + ":")
             # find prefix (if there is one)
             i = 0
-            prefix = ''
-            while item[i] != 'd':
+            prefix = ""
+            while item[i] != "d":
                 prefix += item[i]
                 i += 1
-            if prefix == '':
-                prefix = '1'
+            if prefix == "":
+                prefix = "1"
             try:
                 prefix = int(prefix)
             except:
-                print('Whoops prefix')
-                return 'Error! Please double-check your formatting and try again!'
+                print("Whoops prefix")
+                return "Error! Please double-check your formatting and try again!"
 
             # get number of faces
             i += 1
-            faces = ''
+            faces = ""
             while i < len(item):
                 faces += item[i]
                 i += 1
             try:
                 faces = int(faces)
             except:
-                print('Whoops faces')
-                return 'Error! Please double-check your formatting and try again!'
+                print("Whoops faces")
+                return "Error! Please double-check your formatting and try again!"
 
             if faces == 0:
-                return 'do not try to roll a d0 please.'
+                return "do not try to roll a d0 please."
             die_total = 0
             # roll the dice
             for k in range(prefix):
                 roll = random.randint(1, faces)
                 die_total += roll
-                new_dice.append('(' + str(roll) + ')')
+                new_dice.append("(" + str(roll) + ")")
             running_total.append(die_total)
             roll_log.append(new_dice)
 
@@ -82,11 +85,11 @@ def parse_dice_rolls(input):
             roll_log.append(item)
             running_total.append(item)
             print(roll_log)
-            if item == '+':
+            if item == "+":
                 add_sub = True
-            elif item == '-':
+            elif item == "-":
                 add_sub = not add_sub
-            elif item != '': # debug this later
+            elif item != "":  # debug this later
                 if add_sub:
                     modifier += int(item)
                 else:
@@ -96,13 +99,13 @@ def parse_dice_rolls(input):
     add_sub = True
     total = 0
     for term in running_total:
-        if term != '+' and term != '-' and term != '':
+        if term != "+" and term != "-" and term != "":
             if add_sub:
                 total += int(term)
             else:
                 total -= int(term)
         else:
-            if term == '+':
+            if term == "+":
                 add_sub = True
             else:
                 add_sub = not add_sub
