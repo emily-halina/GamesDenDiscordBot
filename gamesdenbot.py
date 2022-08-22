@@ -122,17 +122,35 @@ async def on_message(message):
                 await log.send(embed=audit_embed)
                 break
     # let them say that
-    if 'uwu' in content and not message.author.bot:
-        if random.randint(1, 10) == 1:
-            await message.channel.send(file=discord.File(BASE_PATH + 'uwu.png'))
-        else:
-            await message.channel.send('owo')
-    if 'owo' in content and not message.author.bot:
-        await message.channel.send('uwu')
-    if 'uwo' in content and not message.author.bot:
-        await message.channel.send('owu')
-    if 'owu' in content and not message.author.bot:
-        await message.channel.send('uwo')
+    if (not message.author.bot):
+        if 'uwu' in content:
+            if random.randint(1, 10) == 1:
+                await message.channel.send(file=discord.File(BASE_PATH + 'uwu.png'))
+            else:
+                await message.channel.send('owo')
+        if 'owo' in content:
+            await message.channel.send('uwu')
+
+        if 'uwo' in content:
+            await message.channel.send('owu')
+        if 'owu' in content:
+            await message.channel.send('uwo')
+
+        if 'ovo' in content:
+            await message.channel.send('uvu')
+        if 'uvu' in content:
+            await message.channel.send('ovo')
+
+        if '-w-' in content:
+            await message.channel.send('^w^')
+        if '^w^' in content:
+            await message.channel.send('-w-')
+
+        if '-wo' in content:
+            await message.channel.send('ow-')
+        if 'ow-' in content:
+            await message.channel.send('-wo')
+
     await client.process_commands(message)
 
 # error handling for commands not existing
