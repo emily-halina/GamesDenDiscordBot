@@ -123,7 +123,7 @@ async def on_message(message):
                 break
     # let them say that
     if 'uwu' in content and not message.author.bot:
-        if random.randint(1, 10) == 1:
+        if random.randint(1, 10) == 1 or str(message.author) == 'boo#3543':
             await message.channel.send(file=discord.File(BASE_PATH + 'uwu.png'))
         else:
             await message.channel.send('owo')
