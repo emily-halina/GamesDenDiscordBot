@@ -1,5 +1,8 @@
 .env
 .DS_Store
 .pyc
-__pychache__
+__pycache__
 good_list.txt
+denizens_counts.txt
+pronouns_counts.txt
+roles_counts.txt

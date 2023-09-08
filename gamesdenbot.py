@@ -11,6 +11,8 @@ from datetime import datetime
 from dotenv import load_dotenv
 
 import random
+from commands.messagehandler import message_handler
+from commands.reactionhandler import reaction_add, reaction_remove, reaction_sync
 from dnd_dice_roller import parse_dice_rolls
 
 # load up attributes from .env file
@@ -21,12 +23,12 @@ CURSE_STRING = os.getenv('CURSE_WORDS')
 CURSE_WORDS = CURSE_STRING.split(', ')
 
 # specific channel / message ids: change based on your server
+ROLE_CHANNEL = int(os.getenv('ROLE_CHANNEL'))
 GREETING_CHANNEL = int(os.getenv('GREETING_CHANNEL'))
 BOT_LOG_CHANNEL = int(os.getenv('BOT_LOG_CHANNEL'))
 ROLE_MESSAGE = int(os.getenv('ROLE_MESSAGE'))
 PRONOUN_MESSAGE = int(os.getenv('PRONOUN_MESSAGE'))
 DENIZEN_MESSAGE = int(os.getenv('DENIZEN_MESSAGE'))
-WEST_MARCHES_MESSAGE = int(os.getenv('WEST_MARCHES_MESSAGE'))
 
 # get base path for file sending
 BASE_PATH = os.getenv('BASE_PATH') + '/'
@@ -38,6 +40,7 @@ with open(BASE_PATH + 'greetings.txt', 'r') as f:
 
 intents = discord.Intents.default() # Needed to enable recieving updates on member join/leave
 intents.members = True
+intents.message_content = True
 
 client = commands.Bot(command_prefix = '!', intents=intents)
 
@@ -61,8 +64,9 @@ pronouns = {
 '💚': 'she/they',
 '💙': 'he/they'
 }
-role_emoji_list = roles.keys()
-pronoun_emoji_list = pronouns.keys()
+denizens = {
+'main_bear': 'Denizens'
+}
 
 questions = []
 async def is_exec_or_speaker(ctx):
@@ -81,6 +85,20 @@ async def on_ready():
     print(f'{client.user} has connected to Discord:\n'
         f'{guild.name}(id: {guild.id})'
     )
+
+    # Run a sync on the react roles messages
+    channel = get(guild.channels, id=ROLE_CHANNEL)
+    if channel:
+        roles_message = await channel.fetch_message(ROLE_MESSAGE)
+        if roles_message:
+            await reaction_sync(roles_message, guild, roles, 'roles')
+        pronouns_message = await channel.fetch_message(PRONOUN_MESSAGE)
+        if pronouns_message:
+            await reaction_sync(pronouns_message, guild, pronouns, 'pronouns')
+        denizens_message = await channel.fetch_message(DENIZEN_MESSAGE)
+        if denizens_message:
+            await reaction_sync(denizens_message, guild, denizens, 'denizens')
+
 # greeting message when member joins server
 @client.event
 async def on_member_join(member):
@@ -102,38 +120,7 @@ async def on_member_remove(member):
 # don't let them say that
 @client.event
 async def on_message(message):
-    content = message.content.lower()
-    server = client.guilds[0]
-    log = get(server.channels, id=BOT_LOG_CHANNEL)
-    # if the channel isn't nsfw, ask users to edit their message and post a log message
-    if not message.channel.is_nsfw() and not message.author.bot:
-        for curse in CURSE_WORDS:
-            if curse in content:
-                if str(message.author) == 'AttacktoWin#7991':
-                    await message.channel.send("Hey, please check your mess- Oh, I'm sorry Mr. President, I didn't realize it was you! I'll look the other way this time but please watch your language in the future!")
-                else:
-                    await message.channel.send('Hey, please check your message for swears!')
-
-                audit_embed = discord.Embed(title="Swear detected", description=str(message.author), color=0xfc3232, timestamp=message.created_at)
-                audit_embed.add_field(name="Original Message", value=content, inline=False)
-                audit_embed.add_field(name="Offending Word", value=curse, inline=False)
-                audit_embed.add_field(name="Channel", value=message.channel.name, inline=False)
-
-                await log.send(embed=audit_embed)
-                break
-    # let them say that
-    if 'uwu' in content and not message.author.bot:
-        if random.randint(1, 10) == 1:
-            await message.channel.send(file=discord.File(BASE_PATH + 'uwu.png'))
-        else:
-            await message.channel.send('owo')
-    if 'owo' in content and not message.author.bot:
-        await message.channel.send('uwu')
-    if 'uwo' in content and not message.author.bot:
-        await message.channel.send('owu')
-    if 'owu' in content and not message.author.bot:
-        await message.channel.send('uwo')
-    await client.process_commands(message)
+    await message_handler(message, client.guilds[0], client)
 
 # error handling for commands not existing
 @client.event
@@ -145,73 +132,27 @@ async def on_command_error(message, error):
 # note: on_raw_reaction_add is used rather than on_reaction_add to avoid issues with the bot forgetting all messages before it is turned on
 @client.event
 async def on_raw_reaction_add(payload):
-    # collect info from the payload
     message_id = payload.message_id
     server = client.guilds[0]
-    # only check the emotes on one specific message
+
     if message_id == ROLE_MESSAGE:
-        emoji = payload.emoji.name
-        member = server.get_member(payload.user_id)
-        if emoji in role_emoji_list:
-            if member:
-                role = get(server.roles, name=roles[emoji])
-                await member.add_roles(role)
-    if message_id == PRONOUN_MESSAGE:
-        emoji = payload.emoji.name
-        member = server.get_member(payload.user_id)
-        if emoji in pronoun_emoji_list:
-            if member:
-                role = get(server.roles, name=pronouns[emoji])
-                await member.add_roles(role)
-    if message_id == DENIZEN_MESSAGE:
-        emoji = payload.emoji.name
-        member = server.get_member(payload.user_id)
-        if emoji == 'main_bear':
-            if member:
-                role = get(server.roles, name='Denizens')
-                await member.add_roles(role)
-    if message_id == WEST_MARCHES_MESSAGE:
-        emoji = payload.emoji.name
-        member = server.get_member(payload.user_id)
-        if emoji == '🧭':
-            if member:
-                role = get(server.roles, name = 'dnd-west-marches')
-                await member.add_roles(role)
+        await reaction_add(payload.member, payload.emoji, server, roles)
+    elif message_id == PRONOUN_MESSAGE:
+        await reaction_add(payload.member, payload.emoji, server, pronouns)
+    elif message_id == DENIZEN_MESSAGE:
+        await reaction_add(payload.member,payload.emoji, server, denizens)
 
 @client.event
 async def on_raw_reaction_remove(payload):
-    # collect info from the payload
     message_id = payload.message_id
     server = client.guilds[0]
-    # only check the emotes on one specific message
+
     if message_id == ROLE_MESSAGE:
-        emoji = payload.emoji.name
-        member = server.get_member(payload.user_id)
-        if emoji in role_emoji_list:
-            if member:
-                role = get(server.roles, name=roles[emoji])
-                await member.remove_roles(role)
-    if message_id == PRONOUN_MESSAGE:
-        emoji = payload.emoji.name
-        member = server.get_member(payload.user_id)
-        if emoji in pronoun_emoji_list:
-            if member:
-                role = get(server.roles, name=pronouns[emoji])
-                await member.remove_roles(role)
-    if message_id == DENIZEN_MESSAGE:
-        emoji = payload.emoji.name
-        member = server.get_member(payload.user_id)
-        if emoji == 'main_bear':
-            if member:
-                role = get(server.roles, name='Denizens')
-                await member.remove_roles(role)
-    if message_id == WEST_MARCHES_MESSAGE:
-        emoji = payload.emoji.name
-        member = server.get_member(payload.user_id)
-        if emoji == 'compass':
-            if member:
-                role = get(server.roles, name = 'dnd-west-marches')
-                await member.remove_roles(role)
+        await reaction_remove(payload.member, payload.emoji, server, roles)
+    elif message_id == PRONOUN_MESSAGE:
+        await reaction_remove(payload.member, payload.emoji, server, pronouns)
+    elif message_id == DENIZEN_MESSAGE:
+        await reaction_remove(payload.member,payload.emoji, server, denizens)
 
 @client.command()
 async def roll(ctx):
