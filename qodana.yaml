@@ -1,5 +1,5 @@
 version: "1.0"
-linter: jetbrains/qodana-python:2022.2-eap
+linter: jetbrains/qodana-python-community:2023.2
 bootstrap: >
   rm -rf .idea &&
   pip3 install -r requirements.txt -r requirements.dev.txt --upgrade --quiet
