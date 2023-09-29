@@ -19,6 +19,8 @@ async def reaction_sync(message: Message, server: Guild, roles: dict, roles_name
                 continue
             for i in range(len(old_counts)):
                 line = old_counts[i]
+                if line.strip() == '':
+                    continue
                 role, count = line.split(',')
                 if role != reaction.emoji:
                     continue
@@ -32,7 +34,9 @@ async def reaction_sync(message: Message, server: Guild, roles: dict, roles_name
                         role = get(server.roles, name=roles[reaction.emoji])
                         if role:
                             await user.add_roles(role)
-                updated_counts[i] = '%s,%i' % (reaction.emoji.name, len(users))
+                updated_counts[i] = '%s,%i' % (reaction.emoji
+                                                if type(reaction.emoji) is str
+                                                else reaction.emoji.name, len(users))
                 break
             else:
                 if reaction.emoji in roles.keys():
