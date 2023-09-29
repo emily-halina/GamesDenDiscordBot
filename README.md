@@ -22,6 +22,7 @@ DISCORD_SERVER = your_server_name
 CURSE_WORDS = censored, list, of, words, formatted, like, so
 GREETING_CHANNEL = channel_ID
 BOT_LOG_CHANNEL = channel_ID
+ROLE_CHANNEL = channel_ID
 ROLE_MESSAGE = message_ID
 PRONOUN_MESSAGE = message_ID
 DENIZEN_MESSAGE = message_ID
