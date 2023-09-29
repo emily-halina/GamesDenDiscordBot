@@ -1,4 +1,4 @@
-import copy
+from copy import copy
 import dotenv
 import discord
 from discord import Message, Guild
