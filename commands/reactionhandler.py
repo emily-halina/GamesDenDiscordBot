@@ -1,3 +1,4 @@
+import copy
 import dotenv
 import discord
 from discord import Message, Guild
@@ -13,7 +14,7 @@ async def reaction_sync(message: Message, server: Guild, roles: dict, roles_name
     updated_counts = []
     with open(BASE_PATH + '%s_counts.txt' % roles_name, 'r', encoding='utf8') as file:
         old_counts = file.readlines()
-        updated_counts = file.readlines()
+        updated_counts = copy(old_counts)
         for reaction in message.reactions:
             if reaction.emoji not in roles.keys():
                 continue
