@@ -1,13 +1,14 @@
 from copy import copy
-import dotenv
 import discord
+import dotenv
+import os
 from discord import Message, Guild
 from discord.utils import get
-import os
 
 dotenv.load_dotenv()
 # get base path for file sending
-BASE_PATH = os.getenv('BASE_PATH') + '/'
+BASE_PATH = os.getenv("BASE_PATH") + "/"
+
 
 # Handles checking for missed reactions since the last time BearBot was on
 async def reaction_sync(message: Message, server: Guild, roles: dict, roles_name: str):
@@ -26,7 +27,7 @@ async def reaction_sync(message: Message, server: Guild, roles: dict, roles_name
                 role, count = line.split(',')
                 if role != key:
                     continue
-                
+
                 users = [user async for user in reaction.users()]
                 if len(users) == int(count):
                     break
@@ -53,7 +54,9 @@ async def reaction_sync(message: Message, server: Guild, roles: dict, roles_name
     with open(BASE_PATH + '%s_counts.txt' % roles_name, 'w', encoding='utf8') as file:
         file.writelines(updated_counts)
 
-async def reaction_add(member: discord.Member, emoji: discord.PartialEmoji, server: Guild, roles: dict, roles_name: str):
+async def reaction_add(
+  member: discord.Member, emoji: discord.PartialEmoji, server: Guild, roles: dict, roles_name: str
+):
     lines = []
     with open(BASE_PATH + '%s_counts.txt' % roles_name, 'r', encoding='utf8') as file: 
         lines = file.readlines()
@@ -94,7 +97,9 @@ async def reaction_add(member: discord.Member, emoji: discord.PartialEmoji, serv
     with open(BASE_PATH + '%s_counts.txt' % roles_name, 'w', encoding='utf8') as file:
         file.writelines(lines)
 
-async def reaction_remove(member: discord.Member, emoji: discord.PartialEmoji, server: Guild, roles: dict, roles_name: str):
+async def reaction_remove(
+  member: discord.Member, emoji: discord.PartialEmoji, server: Guild, roles: dict, roles_name: str
+):
     lines = []
     with open(BASE_PATH + '%s_counts.txt' % roles_name, 'r', encoding='utf8') as file: 
         lines = file.readlines()

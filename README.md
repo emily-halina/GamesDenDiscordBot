@@ -3,6 +3,10 @@ Small discord bot for the Games Den game development club at University of Alber
 
 Written by Emily Halina & maintained by Shashank Bhat, with reference to previous bot by Atharv Vohra --> https://github.com/AtharvVohra/BearBot
 
+## CI Status
+
+[![CI](https://github.com/emily-halina/GamesDenDiscordBot/actions/workflows/ci.yml/badge.svg)](https://github.com/emily-halina/GamesDenDiscordBot/actions/workflows/ci.yml)
+
 ## Includes:
 - join / leave message for users joining and leaving server
 - assigning / removing roles based on reactions to a specific message
@@ -32,3 +36,8 @@ BASE_PATH = path/to/this/folder
 ## To add:
 - editable / quotable rules text
 - more to come
+
+
+## Development guide
+
+This repository uses black linter for style check. Please use that code style when updating code.

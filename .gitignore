@@ -6,3 +6,9 @@ good_list.txt
 denizens_counts.txt
 pronouns_counts.txt
 roles_counts.txt
+
+# Intellij+all
+.idea
+venv
+.vscode
+.fleet
