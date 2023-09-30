@@ -141,11 +141,12 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
     server = client.get_guild(payload.guild_id)
 
     if message_id == ROLE_MESSAGE:
-        await reaction_add(payload.member, payload.emoji, server, roles, 'roles')
+        await reaction_add(payload.member, payload.emoji, server, roles, "roles")
     elif message_id == PRONOUN_MESSAGE:
-        await reaction_add(payload.member, payload.emoji, server, pronouns, 'pronouns')
+        await reaction_add(payload.member, payload.emoji, server, pronouns, "pronouns")
     elif message_id == DENIZEN_MESSAGE:
-        await reaction_add(payload.member, payload.emoji, server, denizens, 'denizens')
+        await reaction_add(payload.member, payload.emoji, server, denizens, "denizens")
+
 
 @client.event
 async def on_raw_reaction_remove(payload: discord.RawReactionActionEvent):
@@ -154,11 +155,12 @@ async def on_raw_reaction_remove(payload: discord.RawReactionActionEvent):
     member = server.get_member(payload.user_id)
 
     if message_id == ROLE_MESSAGE:
-        await reaction_remove(member, payload.emoji, server, roles, 'roles')
+        await reaction_remove(member, payload.emoji, server, roles, "roles")
     elif message_id == PRONOUN_MESSAGE:
-        await reaction_remove(member, payload.emoji, server, pronouns, 'pronouns')
+        await reaction_remove(member, payload.emoji, server, pronouns, "pronouns")
     elif message_id == DENIZEN_MESSAGE:
-        await reaction_remove(member, payload.emoji, server, denizens, 'denizens')
+        await reaction_remove(member, payload.emoji, server, denizens, "denizens")
+
 
 @client.command()
 async def roll(ctx):
