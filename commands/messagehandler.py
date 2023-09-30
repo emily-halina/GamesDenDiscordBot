@@ -24,7 +24,8 @@ async def message_handler(message: Message, server: Guild, client: Bot):
             if curse in content:
                 if str(message.author) == PRESIDENT:
                     await message.channel.send(
-                        "Hey, please check your mess-Oh, I'm sorry %s. President, I didn't realize it was you! I'll look the other way this time but please watch your language in the future!"
+                        "Hey, please check your mess-Oh, I'm sorry %s. President, I didn't realize"
+                        + " it was you! I'll look the other way this time but please watch your language in the future!"
                         % PRONOUN
                     )
                 else:

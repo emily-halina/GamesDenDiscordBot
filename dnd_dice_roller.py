@@ -5,26 +5,26 @@ import random
 
 
 def main():
-    input = get_input()
-    parse_dice_rolls(input)
+    content = get_input()
+    parse_dice_rolls(content)
 
 
 def get_input():
     return input("Enter your dice roll! ")
 
 
-def parse_dice_rolls(input):
+def parse_dice_rolls(content):
     # parse the input into a list
-    input = input.replace(" ", "")
-    input = input.replace("💯", "100")  # 💯
-    if input == "":
+    content = content.replace(" ", "")
+    content = content.replace("💯", "100")  # 💯
+    if content == "":
         return random.randint(1, 100)
     input_list = []
     modifier = 0
     chunk = ""
     add_sub = True
 
-    for c in input:
+    for c in content:
         if c != "+" and c != "-":
             chunk += c
         else:
@@ -42,7 +42,7 @@ def parse_dice_rolls(input):
         item = item.lower()
         # this is a dice
         if "d" in item:
-            new_dice = []
+            new_dice = list()
             new_dice.append(item + ":")
             # find prefix (if there is one)
             i = 0
@@ -54,7 +54,7 @@ def parse_dice_rolls(input):
                 prefix = "1"
             try:
                 prefix = int(prefix)
-            except:
+            except ValueError:
                 print("Whoops prefix")
                 return "Error! Please double-check your formatting and try again!"
 
@@ -66,7 +66,7 @@ def parse_dice_rolls(input):
                 i += 1
             try:
                 faces = int(faces)
-            except:
+            except ValueError:
                 print("Whoops faces")
                 return "Error! Please double-check your formatting and try again!"
 
