@@ -32,7 +32,7 @@ async def reaction_sync(message: Message, server: Guild, roles: dict, roles_name
                     break
                 
                 for user in users:
-                    if user is discord.Member:
+                    if callable(getattr(user, 'add_roles', None)):
                         role = get(server.roles, name=roles[key])
                         if role:
                             await user.add_roles(role)
@@ -44,9 +44,10 @@ async def reaction_sync(message: Message, server: Guild, roles: dict, roles_name
                     users = [user async for user in reaction.users()]
                     updated_counts.append('%s,%i\n' % (key, len(users)))
                     for user in users:
-                        role = get(server.roles, name=roles[key])
-                        if role:
-                            await user.add_roles(role)
+                        if callable(getattr(user, 'add_roles', None)):
+                            role = get(server.roles, name=roles[key])
+                            if role:
+                                await user.add_roles(role)
     with open(BASE_PATH + '%s_counts.txt' % roles_name, 'w', encoding='utf8') as file:
         file.writelines(updated_counts)
 
