@@ -32,7 +32,8 @@ async def reaction_sync(message: Message, server: Guild, roles: dict, roles_name
                     break
                 
                 for user in users:
-                    if callable(getattr(user, 'add_roles', None)):
+                    server_user = server.get_member(user.id)
+                    if server_user:
                         role = get(server.roles, name=roles[key])
                         if role:
                             await user.add_roles(role)
@@ -44,7 +45,8 @@ async def reaction_sync(message: Message, server: Guild, roles: dict, roles_name
                     users = [user async for user in reaction.users()]
                     updated_counts.append('%s,%i\n' % (key, len(users)))
                     for user in users:
-                        if callable(getattr(user, 'add_roles', None)):
+                        server_user = server.get_member(user.id)
+                        if server_user:
                             role = get(server.roles, name=roles[key])
                             if role:
                                 await user.add_roles(role)
