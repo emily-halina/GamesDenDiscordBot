@@ -100,8 +100,8 @@ async def on_ready():
 
 # greeting message when member joins server
 @client.event
-async def on_member_join(member):
-    server = client.guilds[0]
+async def on_member_join(member: discord.Member):
+    server = member.guild
     channel = client.get_channel(GREETING_CHANNEL)
     rules = get(server.channels, name="rules-and-info")
     intro = get(server.channels, name="introductions")
@@ -115,14 +115,14 @@ async def on_member_join(member):
 
 # leaving message when member leaves server
 @client.event
-async def on_member_remove(member):
+async def on_member_remove(member: discord.Member):
     channel = client.get_channel(BOT_LOG_CHANNEL)
     await channel.send(f"Bye Bye {member.name} . . .")
 
 
 # don't let them say that
 @client.event
-async def on_message(message):
+async def on_message(message: discord.Member):
     await message_handler(message, client.guilds[0], client)
 
 
@@ -136,30 +136,29 @@ async def on_command_error(message, error):
 # assign roles based on reaction to specific message
 # note: on_raw_reaction_add is used rather than on_reaction_add to avoid issues with the bot forgetting all messages before it is turned on
 @client.event
-async def on_raw_reaction_add(payload):
+async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
     message_id = payload.message_id
-    server = client.guilds[0]
+    server = client.get_guild(payload.guild_id)
 
     if message_id == ROLE_MESSAGE:
-        await reaction_add(payload.member, payload.emoji, server, roles)
+        await reaction_add(payload.member, payload.emoji, server, roles, 'roles')
     elif message_id == PRONOUN_MESSAGE:
-        await reaction_add(payload.member, payload.emoji, server, pronouns)
+        await reaction_add(payload.member, payload.emoji, server, pronouns, 'pronouns')
     elif message_id == DENIZEN_MESSAGE:
-        await reaction_add(payload.member, payload.emoji, server, denizens)
-
+        await reaction_add(payload.member, payload.emoji, server, denizens, 'denizens')
 
 @client.event
-async def on_raw_reaction_remove(payload):
+async def on_raw_reaction_remove(payload: discord.RawReactionActionEvent):
     message_id = payload.message_id
-    server = client.guilds[0]
+    server = client.get_guild(payload.guild_id)
+    member = server.get_member(payload.user_id)
 
     if message_id == ROLE_MESSAGE:
-        await reaction_remove(payload.member, payload.emoji, server, roles)
+        await reaction_remove(member, payload.emoji, server, roles, 'roles')
     elif message_id == PRONOUN_MESSAGE:
-        await reaction_remove(payload.member, payload.emoji, server, pronouns)
+        await reaction_remove(member, payload.emoji, server, pronouns, 'pronouns')
     elif message_id == DENIZEN_MESSAGE:
-        await reaction_remove(payload.member, payload.emoji, server, denizens)
-
+        await reaction_remove(member, payload.emoji, server, denizens, 'denizens')
 
 @client.command()
 async def roll(ctx):
