@@ -16,40 +16,37 @@ async def reaction_sync(message: Message, server: Guild, roles: dict, roles_name
         old_counts = file.readlines()
         updated_counts = copy(old_counts)
         for reaction in message.reactions:
-            if reaction.emoji not in roles.keys():
+            key = reaction.emoji if type(reaction.emoji) is str else reaction.emoji.name
+            if key not in roles.keys():
                 continue
             for i in range(len(old_counts)):
                 line = old_counts[i]
                 if line.strip() == '':
                     continue
                 role, count = line.split(',')
-                if role != reaction.emoji:
+                if role != key:
                     continue
                 
                 users = [user async for user in reaction.users()]
                 if len(users) == int(count):
-                    continue
+                    break
                 
                 for user in users:
                     if user is discord.Member:
-                        role = get(server.roles, name=roles[reaction.emoji])
+                        role = get(server.roles, name=roles[key])
                         if role:
                             await user.add_roles(role)
-                updated_counts[i] = '%s,%i' % (reaction.emoji
-                                                if type(reaction.emoji) is str
-                                                else reaction.emoji.name, len(users))
+                updated_counts[i] = '%s,%i' % (key, len(users))
                 break
             else:
-                if reaction.emoji in roles.keys():
+                key = reaction.emoji if type(reaction.emoji) is str else reaction.emoji.name
+                if key in roles.keys():
                     users = [user async for user in reaction.users()]
-                    updated_counts.append('%s,%i\n' % (reaction.emoji
-                                                        if type(reaction.emoji) is str
-                                                        else reaction.emoji.name, len(users)))
+                    updated_counts.append('%s,%i\n' % (key, len(users)))
                     for user in users:
-                        if user is discord.Member:
-                            role = get(server.roles, name=roles[reaction.emoji])
-                            if role:
-                                await user.add_roles(role)
+                        role = get(server.roles, name=roles[key])
+                        if role:
+                            await user.add_roles(role)
     with open(BASE_PATH + '%s_counts.txt' % roles_name, 'w', encoding='utf8') as file:
         file.writelines(updated_counts)
 
