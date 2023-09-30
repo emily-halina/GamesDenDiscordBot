@@ -46,11 +46,7 @@ async def reaction_sync(message: Message, server: Guild, roles: dict, roles_name
             updated_counts[i] = "%s,%i" % (key, len(users))
             break
         else:
-            key = (
-                reaction.emoji
-                if type(reaction.emoji) is str
-                else reaction.emoji.name
-            )
+            key = reaction.emoji if type(reaction.emoji) is str else reaction.emoji.name
             if key in roles.keys():
                 users = [user async for user in reaction.users()]
                 updated_counts.append("%s,%i\n" % (key, len(users)))

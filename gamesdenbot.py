@@ -85,7 +85,10 @@ async def on_ready():
     # find the servers bot is connected to, and print their names and ids
     for guild in client.guilds:
         if guild.name == SERVER:
-            print(f"{client.user} has connected to Discord:\n" f"{guild.name}(id: {guild.id})")
+            print(
+                f"{client.user} has connected to Discord:\n"
+                f"{guild.name}(id: {guild.id})"
+            )
 
             # Run a sync on the react roles messages
             channel = get(guild.channels, id=ROLE_CHANNEL)
@@ -139,7 +142,7 @@ async def on_command_error(message, error):
 
 
 # assign roles based on reaction to specific message
-# note: on_raw_reaction_add is used rather than on_reaction_add to avoid issues with the bot 
+# note: on_raw_reaction_add is used rather than on_reaction_add to avoid issues with the bot
 # forgetting all messages before it is turned on
 @client.event
 async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
@@ -419,7 +422,9 @@ async def say(ctx: discord.ext.commands.context.Context):
         await ctx.channel.send("Cannot send message.")
 
 
-def get_shuffle_channel(shuffle_channel_name: str, channel_list: List[discord.VoiceChannel]) -> discord.VoiceChannel:
+def get_shuffle_channel(
+    shuffle_channel_name: str, channel_list: List[discord.VoiceChannel]
+) -> discord.VoiceChannel:
     for channel in channel_list:
         if shuffle_channel_name == channel.name:
             return channel
