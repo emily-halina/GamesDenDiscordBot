@@ -8,6 +8,7 @@ import random
 from discord.ext import commands
 from discord.utils import get
 from dotenv import load_dotenv
+from typing import Dict, List
 
 from commands.messagehandler import message_handler
 from commands.reactionhandler import reaction_add, reaction_remove, reaction_sync
@@ -31,10 +32,14 @@ DENIZEN_MESSAGE = int(os.getenv("DENIZEN_MESSAGE"))
 # get base path for file sending
 BASE_PATH = os.getenv("BASE_PATH") + "/"
 
+
 # Get random greetings
-greetings = []
-with open(BASE_PATH + "greetings.txt", "r") as f:
-    greetings = f.read().split(";\n")
+def get_greetings() -> List[str]:
+    with open(BASE_PATH + "greetings.txt", "r") as f:
+        return f.read().split(";\n")
+
+
+greetings = get_greetings()
 
 intents = (
     discord.Intents.default()
@@ -65,7 +70,7 @@ pronouns = {
 }
 denizens = {"main_bear": "Denizens"}
 
-questions = []
+questions: List[Dict[str, str]] = []
 
 
 async def is_exec_or_speaker(ctx):
@@ -80,22 +85,21 @@ async def on_ready():
     # find the servers bot is connected to, and print their names and ids
     for guild in client.guilds:
         if guild.name == SERVER:
+            print(f"{client.user} has connected to Discord:\n" f"{guild.name}(id: {guild.id})")
+
+            # Run a sync on the react roles messages
+            channel = get(guild.channels, id=ROLE_CHANNEL)
+            if channel:
+                roles_message = await channel.fetch_message(ROLE_MESSAGE)
+                if roles_message:
+                    await reaction_sync(roles_message, guild, roles, "roles")
+                pronouns_message = await channel.fetch_message(PRONOUN_MESSAGE)
+                if pronouns_message:
+                    await reaction_sync(pronouns_message, guild, pronouns, "pronouns")
+                denizens_message = await channel.fetch_message(DENIZEN_MESSAGE)
+                if denizens_message:
+                    await reaction_sync(denizens_message, guild, denizens, "denizens")
             break
-
-    print(f"{client.user} has connected to Discord:\n" f"{guild.name}(id: {guild.id})")
-
-    # Run a sync on the react roles messages
-    channel = get(guild.channels, id=ROLE_CHANNEL)
-    if channel:
-        roles_message = await channel.fetch_message(ROLE_MESSAGE)
-        if roles_message:
-            await reaction_sync(roles_message, guild, roles, "roles")
-        pronouns_message = await channel.fetch_message(PRONOUN_MESSAGE)
-        if pronouns_message:
-            await reaction_sync(pronouns_message, guild, pronouns, "pronouns")
-        denizens_message = await channel.fetch_message(DENIZEN_MESSAGE)
-        if denizens_message:
-            await reaction_sync(denizens_message, guild, denizens, "denizens")
 
 
 # greeting message when member joins server
@@ -122,8 +126,9 @@ async def on_member_remove(member: discord.Member):
 
 # don't let them say that
 @client.event
-async def on_message(message: discord.Member):
-    await message_handler(message, client.guilds[0], client)
+async def on_message(message: discord.Message):
+    if message.guild:
+        await message_handler(message, message.guild, client)
 
 
 # error handling for commands not existing
@@ -134,7 +139,8 @@ async def on_command_error(message, error):
 
 
 # assign roles based on reaction to specific message
-# note: on_raw_reaction_add is used rather than on_reaction_add to avoid issues with the bot forgetting all messages before it is turned on
+# note: on_raw_reaction_add is used rather than on_reaction_add to avoid issues with the bot 
+# forgetting all messages before it is turned on
 @client.event
 async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
     message_id = payload.message_id
@@ -179,7 +185,7 @@ async def roll(ctx):
     """
     # parse the input if it is valid and get the results
     process = True
-    VALID_CHARS = [
+    valid_chars = [
         " ",
         "   ",
         "1",
@@ -198,22 +204,22 @@ async def roll(ctx):
         "💯",
     ]
     for c in ctx.message.content[6:]:
-        if c.lower() not in VALID_CHARS:
+        if c.lower() not in valid_chars:
             process = False
-    if process == True:
+    if process:
         result = parse_dice_rolls(ctx.message.content[6:])
     else:
         await ctx.channel.send("Error! Please check your formatting and try again..")
         return
     # if the result is a list, the input was a sequence of dice
-    if type(result) == type([]):
+    if type(result) is list:
         # process the result of the rolls and place into an embedded message
         desc_str = "**" + ctx.message.content[6:] + "**"
         roll_embed = discord.Embed(
             title="Dice Roll Results", description=desc_str, color=0x709CDB
         )
         for item in result:
-            if type(item) == type([]):
+            if type(item) is list:
                 rolls = ""
                 i = 1
                 while i < len(item):
@@ -222,7 +228,7 @@ async def roll(ctx):
                 roll_embed.add_field(name=item[0], value=rolls, inline=False)
         modifier = result[len(result) - 2]
         # add on the modifier tab if there is a modifier
-        if type(modifier) == type(1) and modifier != 0:
+        if type(modifier) is int and modifier != 0:
             if modifier > 0:
                 modifier = str(modifier)
                 modifier = "+" + modifier
@@ -233,12 +239,12 @@ async def roll(ctx):
             name="Total:", value="**" + result[len(result) - 1] + "**", inline=False
         )
     # if the result is an integer, there was no provided argument (roll a d100)
-    elif type(result) == type(1):
+    elif type(result) is int:
         roll_embed = discord.Embed(
             title="Dice Roll Results", description="d100", color=0x709CDB
         )
         roll_embed.add_field(name="d100", value=result, inline=False)
-    elif type(result) == type("hi"):
+    elif type(result) is str:
         await ctx.channel.send(result)
         return
     # failsafe
@@ -288,7 +294,7 @@ async def dq(ctx):
     question = questions.pop(0)
     message = discord.Embed(title="Question", color=0xF2E835)
     message.add_field(name=question["author"], value=question["message"], inline=False)
-    message.add_field(name="Questions left", value=len(questions), inline=False)
+    message.add_field(name="Questions left", value=str(len(questions)), inline=False)
 
     await ctx.channel.send(content="<@&817218239888359465>", embed=message)
 
@@ -304,10 +310,10 @@ async def nickname_check(ctx):
     with open(BASE_PATH + "good_list.txt", "r") as f:
         whitelist = f.readlines()
         for member in member_list:
-            if member.nick == None:
+            if not member.nick:
                 if f"{str(member)}\n" not in whitelist:
                     join_list.append(member)
-    join_list.sort(key=lambda member: member.joined_at)
+    join_list.sort(key=lambda m: m.joined_at)
     embed = discord.Embed(
         title="Nickname Check", description="bad boyz girlz and enbiez", color=0x709CDB
     )
@@ -413,6 +419,12 @@ async def say(ctx: discord.ext.commands.context.Context):
         await ctx.channel.send("Cannot send message.")
 
 
+def get_shuffle_channel(shuffle_channel_name: str, channel_list: List[discord.VoiceChannel]) -> discord.VoiceChannel:
+    for channel in channel_list:
+        if shuffle_channel_name == channel.name:
+            return channel
+
+
 @client.command()
 @commands.has_role("Execs")
 async def shuffle(ctx):
@@ -424,27 +436,22 @@ async def shuffle(ctx):
     server = client.guilds[0]
     channel_list = server.voice_channels
     message = ctx.message.content.split(",")
-    match = False
     num_groups = 0
 
     # find the voice channel in question
-    for channel in channel_list:
-        if message[0][9:] == channel.name:
-            match = True
-            shuffle_channel = channel
-            break
+    shuffle_channel = get_shuffle_channel(message[0][9:], channel_list)
 
     try:
         num_groups = int(message[1])
         if num_groups < 1:
             raise Exception()
-    except:
+    except Exception:
         num = False
     else:
         num = True
 
     # if the syntax is valid
-    if match and num:
+    if shuffle_channel and num:
         # shuffle up the members and disperse them into groups
         members = shuffle_channel.members
         random.shuffle(members)
@@ -473,7 +480,7 @@ async def shuffle(ctx):
             embed.add_field(name=name, value=content, inline=False)
         await ctx.channel.send(embed=embed)
 
-    elif not match:
+    elif not shuffle_channel:
         await ctx.channel.send("Error, not a valid channel!")
     elif not num:
         await ctx.channel.send("Error, not a valid number!")
